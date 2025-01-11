@@ -13,5 +13,106 @@ CHIP Register {
     OUT out[16];
 
     PARTS:
-    //// Replace this comment with your code.
+    Mux16 (
+        a=in,
+        b[0]=inputRegister0,
+        b[1]=inputRegister1,
+        b[2]=inputRegister2,
+        b[3]=inputRegister3,
+        b[4]=inputRegister4,
+        b[5]=inputRegister5,
+        b[6]=inputRegister6,
+        b[7]=inputRegister7,
+        b[8]=inputRegister8,
+        b[9]=inputRegister9,
+        b[10]=inputRegister10,
+        b[11]=inputRegister11,
+        b[12]=inputRegister12,
+        b[13]=inputRegister13,
+        b[14]=inputRegister14,
+        b[15]=inputRegister15,
+        sel=load,
+        out[0]=preout0,
+        out[1]=preout1,
+        out[2]=preout2,
+        out[3]=preout3,
+        out[4]=preout4,
+        out[5]=preout5,
+        out[6]=preout6,
+        out[7]=preout7,
+        out[8]=preout8,
+        out[9]=preout9,
+        out[10]=preout10,
+        out[11]=preout11,
+        out[12]=preout12,
+        out[13]=preout13,
+        out[14]=preout14,
+        out[15]=preout15
+    );
+
+    DFF (in=preregistered0, out=out[0]);
+    DFF (in=preregistered1, out=out[1]);
+    DFF (in=preregistered2, out=out[2]);
+    DFF (in=preregistered3, out=out[3]);
+    DFF (in=preregistered4, out=out[4]);
+    DFF (in=preregistered5, out=out[5]);
+    DFF (in=preregistered6, out=out[6]);
+    DFF (in=preregistered7, out=out[7]);
+    DFF (in=preregistered8, out=out[8]);
+    DFF (in=preregistered9, out=out[9]);
+    DFF (in=preregistered10, out=out[10]);
+    DFF (in=preregistered11, out=out[11]);
+    DFF (in=preregistered12, out=out[12]);
+    DFF (in=preregistered13, out=out[13]);
+    DFF (in=preregistered14, out=out[14]);
+    DFF (in=preregistered15, out=out[15]);
+
+
+Mux (a=inputRegister0, b=in[0], sel=load, out=preregistered0);
+DFF (in=preregistered0, out=inputRegister0);
+
+Mux (a=inputRegister1, b=in[1], sel=load, out=preregistered1);
+DFF (in=preregistered1, out=inputRegister1);
+
+Mux (a=inputRegister2, b=in[2], sel=load, out=preregistered2);
+DFF (in=preregistered2, out=inputRegister2);
+
+Mux (a=inputRegister3, b=in[3], sel=load, out=preregistered3);
+DFF (in=preregistered3, out=inputRegister3);
+
+Mux (a=inputRegister4, b=in[4], sel=load, out=preregistered4);
+DFF (in=preregistered4, out=inputRegister4);
+
+Mux (a=inputRegister5, b=in[5], sel=load, out=preregistered5);
+DFF (in=preregistered5, out=inputRegister5);
+
+Mux (a=inputRegister6, b=in[6], sel=load, out=preregistered6);
+DFF (in=preregistered6, out=inputRegister6);
+
+Mux (a=inputRegister7, b=in[7], sel=load, out=preregistered7);
+DFF (in=preregistered7, out=inputRegister7);
+
+Mux (a=inputRegister8, b=in[8], sel=load, out=preregistered8);
+DFF (in=preregistered8, out=inputRegister8);
+
+Mux (a=inputRegister9, b=in[9], sel=load, out=preregistered9);
+DFF (in=preregistered9, out=inputRegister9);
+
+Mux (a=inputRegister10, b=in[10], sel=load, out=preregistered10);
+DFF (in=preregistered10, out=inputRegister10);
+
+Mux (a=inputRegister11, b=in[11], sel=load, out=preregistered11);
+DFF (in=preregistered11, out=inputRegister11);
+
+Mux (a=inputRegister12, b=in[12], sel=load, out=preregistered12);
+DFF (in=preregistered12, out=inputRegister12);
+
+Mux (a=inputRegister13, b=in[13], sel=load, out=preregistered13);
+DFF (in=preregistered13, out=inputRegister13);
+
+Mux (a=inputRegister14, b=in[14], sel=load, out=preregistered14);
+DFF (in=preregistered14, out=inputRegister14);
+
+Mux (a=inputRegister15, b=in[15], sel=load, out=preregistered15);
+DFF (in=preregistered15, out=inputRegister15);
 }
