@@ -12,7 +12,20 @@
 CHIP PC {
     IN in[16],inc, load, reset;
     OUT out[16];
-    
+
     PARTS:
-    //// Replace this comment with your code.
+    // PCチップのインターフェースは、incとresetという名称の制御ビットがある点
+を除けば、レジスタと同じである｡ inc==1 のとき、カウンタはクロックサイクルご とに、その状態をインクリメントしPC++の演算を行う。カウンタを0にリセットし たい場合は、resetビットをアサートする。カウンタをvという値にセットしたい場 合は、vをin入力に入れ、loadビットをアサートする。
+
+    // 1. load,inc,reset を後ろから Mux していき、valueを出す
+    // 3. Mux4Way16 で 1のsel で 2を出力させる
+    // 4. 3をregister し outする
+
+    Not (in=load, out=notload);
+    Or  (a=load, b=notload, out=one);
+    Register (in=value, load=one, out=out);
+
+    // inc
+    Inc16 (in=in, out=inced);
+    Or (a=in, b=inced, out=value1);
 }
