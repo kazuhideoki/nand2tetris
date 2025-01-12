@@ -12,6 +12,43 @@ CHIP RAM64 {
     IN in[16], load, address[6];
     OUT out[16];
 
+    // address が 6桁 `000000` これをどう register に対応させるか？
+    // RAM8 だと 3桁で、DMux8Way でa~h(0~7) に振り分けてた
+    // 前半で どのRAM8に？ 後半で対象 RAM8 の中で どの Register を参照するか？
     PARTS:
-    //// Replace this comment with your code.
+
+    DMux8Way (
+      in=load,
+      sel=address[3..5],
+      a=loada,
+      b=loadb,
+      c=loadc,
+      d=loadd,
+      e=loade,
+      f=loadf,
+      g=loadg,
+      h=loadh
+    );
+
+    RAM8 (in=in, load=loada, address=address[0..2], out=register0);
+    RAM8 (in=in, load=loadb, address=address[0..2], out=register1);
+    RAM8 (in=in, load=loadc, address=address[0..2], out=register2);
+    RAM8 (in=in, load=loadd, address=address[0..2], out=register3);
+    RAM8 (in=in, load=loade, address=address[0..2], out=register4);
+    RAM8 (in=in, load=loadf, address=address[0..2], out=register5);
+    RAM8 (in=in, load=loadg, address=address[0..2], out=register6);
+    RAM8 (in=in, load=loadh, address=address[0..2], out=register7);
+
+    Mux8Way16(
+      a = register0,
+      b = register1,
+      c = register2,
+      d = register3,
+      e = register4,
+      f = register5,
+      g = register6,
+      h = register7,
+      sel=address[3..5],
+      out=out
+    );
 }
