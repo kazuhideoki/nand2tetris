@@ -8,50 +8,107 @@
 // i.e. writes "black" in every pixel. When no key is pressed,
 // the screen should be cleared.
 
-// loopする
-// key にゅうりょくされたらRAMに保存
-// それをみてSCREENに反映 -> これも LOOPで表現
-
-(LOOP1)
+// without key preparation
+(RESET1)
 
 @i
 M=0
-@count
-M=1000
 @SCREEN
 D=A
 @s
 M=D
+@8192
+D=A
+@count
+M=D
 
-// without key, goto LOOP1
-@KBD
-D=M
 @LOOP1
-D;JEQ
+0;JMP
 
-// fill
-(LOOP2)
-
+(LOOP1)
+// アドレスの設定
 @i
 D=M
 @s
+A=M
 A=A+D
-M=-1
+// 白くする
+M=0
 
+
+// アドレス値の差分インクリメント
 @i
 M=M+1
 @count
 M=M-1
 
-// without key, goto LOOP1
+// 完了チェック
+@count
+D=M
+@FINISHLOOP1
+D;JEQ
+
+@LOOP1
+0;JMP
+
+(FINISHLOOP1)
+
 @KBD
 D=M
-@LOOP1
-D;JEQ
-// @count
-// D=M
-// @LOOP1
-// D;JEQ
+@RESET2
+D;JNE
+
+@FINISHLOOP1
+0;JMP
+
+
+(RESET2)
+@i
+M=0
+@SCREEN
+D=A
+@s
+M=D
+@8192
+D=A
+@count
+M=D
 
 @LOOP2
+0;JMP
+
+(LOOP2)
+// アドレスの設定
+@i
+D=M
+@s
+A=M
+A=A+D
+// 黒くする
+M=-1
+
+
+// アドレス値の差分インクリメント
+@i
+M=M+1
+@count
+M=M-1
+
+// 完了チェック
+@count
+D=M
+@FINISHLOOP2
+D;JEQ
+
+@LOOP2
+0;JMP
+
+(FINISHLOOP2)
+
+@KBD
+D=M
+@RESET1
+D;JEQ
+
+@FINISHLOOP2
 0;JMP
