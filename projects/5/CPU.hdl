@@ -27,10 +27,15 @@ CHIP CPU {
                          // the current program (reset==0).
 
     OUT outM[16],        // M value output
-        writeM,          // Write to M? 
+        writeM,          // Write to M?
         addressM[15],    // Address in data memory (of M)
         pc[15];          // address of next instruction
 
     PARTS:
-	//// Replace this comment with your code.
+
+	Mux16(a=instruction, b=ALUout, sel=instruction[15], out=aRegisterIn);
+	Register(in=aRegisterIn, load=instruction[15], out=aRegisterOut);
+
+	// TODO aluに渡すものを反映させないといけない
+	// Mux16(a=aRegisterOut, b=inM, sel=instruction[15], out=ALUa);
 }
