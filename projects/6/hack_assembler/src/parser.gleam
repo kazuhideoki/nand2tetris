@@ -2,7 +2,12 @@
 
 import gleam/list
 import gleam/string
-import types.{type Row, Comment, Instruction, Label}
+import types.{
+  type Row, AInstruction, CInstruction, Comment, Comp, Jump, LInstruction,
+}
+
+// TODO
+// SymbolTable はどこで保持するか？ -> 関数型なので、引数として渡す
 
 pub fn parser(raw_string: String) {
   raw_string
@@ -20,7 +25,23 @@ fn to_list_and_trim(raw_string: String) -> List(String) {
 fn to_row(str: String) -> Row {
   case str {
     "//" <> _ -> Comment(str)
-    "(" <> _ -> Label(str)
-    _ -> Instruction(str)
+    "(" <> s -> {
+      let label_symbol = case s |> string.split(")") {
+        [ls, _] -> ls
+        _ -> panic
+      }
+      LInstruction(label_symbol)
+    }
+    "@" <> symbol -> AInstruction(symbol)
+    c -> {
+      let splitted_equal = string.split(c, "=")
+      let splitted_semicolon = string.split(c, ";")
+
+      case splitted_equal, splitted_semicolon {
+        [dest, comp], _ -> CInstruction(Comp(dest, comp))
+        _, [dest, jump] -> CInstruction(Jump(dest, jump))
+        _, _ -> panic
+      }
+    }
   }
 }
