@@ -32,10 +32,87 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
+    //////////////////////////////////////////////////////////////////
+    // Aレジスタへの入力選択:
+    //   - A命令(上位ビット=0)の場合: instruction（下位15ビット）を格納
+    //   - C命令(上位ビット=1) かつ d1=1 の場合: ALUout を格納
+    //////////////////////////////////////////////////////////////////
+    Mux16(a=instruction, b=ALUout, sel=instruction[15], out=aIn);
 
-	Mux16(a=instruction, b=ALUout, sel=instruction[15], out=aRegisterIn);
-	Register(in=aRegisterIn, load=instruction[15], out=aRegisterOut);
+    // A命令判定: isA = NOT instruction[15]
+    Not(in=instruction[15], out=isA);
 
-	// TODO aluに渡すものを反映させないといけない
-	// Mux16(a=aRegisterOut, b=inM, sel=instruction[15], out=ALUa);
+    // C命令かつ d1=1 を判定: isCAndD1 = instruction[15] AND instruction[5]
+    And(a=instruction[15], b=instruction[5], out=isCAndD1);
+
+    // Aレジスタをロードする条件 = isA OR isCAndD1
+    Or(a=isA, b=isCAndD1, out=aLoad);
+
+    // 実際のAレジスタ
+    // out[0..14] を addressM に割り当て → メモリアドレス用
+    Register(in=aIn, load=aLoad,
+             out=aRegisterOut,
+             out[0..14]=addressM);
+
+    //////////////////////////////////////////////////////////////////
+    // ALU入力の決定:
+    //   - y は instruction[12] に応じて
+    //       0 → Aレジスタ
+    //       1 → inM
+    //////////////////////////////////////////////////////////////////
+    Mux16(a=aRegisterOut, b=inM, sel=instruction[12], out=mux16out2);
+
+    //////////////////////////////////////////////////////////////////
+    // ジャンプ制御:
+    //   - C命令なら下位3ビット(j1,j2,j3)を見て ALU出力(ng,zr)判定し、PCをロードするか決定
+    //////////////////////////////////////////////////////////////////
+    Not(in=ng, out=nng);    // ng=1 なら ALU出力<0, nng=1 なら ALU出力>=0
+    Not(in=zr, out=nzr);    // zr=1 なら ALU出力=0, nzr=1 なら ALU出力!=0
+
+    // j1=instruction[2], j2=instruction[1], j3=instruction[0]
+    // jumpIfNeg  = j1 & ng   (out < 0)
+    // jumpIfZero = j2 & zr   (out == 0)
+    // jumpIfPos  = j3 & !ng & !zr (out > 0)
+    And(a=instruction[2], b=ng,  out=jumpIfNeg);
+    And(a=instruction[1], b=zr,  out=jumpIfZero);
+    And(a=instruction[0], b=nng, out=tmpPos);
+    And(a=tmpPos,        b=nzr, out=jumpIfPos);
+
+    // jumpCondition = jumpIfNeg OR jumpIfZero OR jumpIfPos
+    Or(a=jumpIfNeg, b=jumpIfZero, out=tmp1);
+    Or(a=tmp1,      b=jumpIfPos,  out=jumpCondition);
+
+    // C命令かつ jumpCondition が成り立つときだけ PC をロード
+    And(a=instruction[15], b=jumpCondition, out=loadPC);
+
+    // PCは常にinc=1 (通常1ずつ進める) かつ loadPC=1ならジャンプ先(Aレジスタ)に飛ぶ
+    PC(in=aRegisterOut, load=loadPC, inc=true, reset=reset, out[0..14]=pc);
+
+    //////////////////////////////////////////////////////////////////
+    // ALU:
+    //   x = Dレジスタ, y = mux16out2, 各種制御ビット(zx,nx,zy,ny,f,no)は
+    //   instruction[11..6] に対応 (Hack仕様)
+    //   ALU出力は ALUout と outM に繋げる (C命令時にメモリへ書く可能性があるため)
+    //////////////////////////////////////////////////////////////////
+    ALU(
+        x=dRegisterOut, y=mux16out2,
+        zx=instruction[11], nx=instruction[10],
+        zy=instruction[9],  ny=instruction[8],
+        f=instruction[7],   no=instruction[6],
+        out=ALUout, out=outM,
+        zr=zr, ng=ng
+    );
+
+    //////////////////////////////////////////////////////////////////
+    // メモリ書き込み制御:
+    //   writeM = C命令(上位ビット=1) かつ d3=1 (instruction[3])
+    //////////////////////////////////////////////////////////////////
+    And(a=instruction[15], b=instruction[3], out=writeM);
+
+    //////////////////////////////////////////////////////////////////
+    // Dレジスタ:
+    //   C命令(上位ビット=1) かつ d2=1 (instruction[4])なら ALUout を書き込む
+    //////////////////////////////////////////////////////////////////
+    And(a=instruction[15], b=instruction[4], out=loadD);
+    Register(in=ALUout, load=loadD, out=dRegisterOut);
 }
