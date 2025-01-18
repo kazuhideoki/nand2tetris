@@ -1,17 +1,17 @@
+import argv
 import gleam/io
+import gleam/list
+import gleam/result
 import simplifile
 
 pub fn main() {
-  let file = simplifile.read("../add/Add.asm")
-  case file {
-    Ok(file) -> {
-      io.debug(file)
-      Nil
-    }
-    Error(err) -> {
-      io.debug(err)
-      Nil
-    }
-  }
-  io.println("Hello from hack_assembler!")
+  let args = argv.load().arguments
+  use path <- result.try(list.first(args))
+  use file <- result.try(
+    simplifile.read(path) |> result.map_error(fn(_) { Nil }),
+  )
+
+  io.debug(file)
+
+  Ok(Nil)
 }
