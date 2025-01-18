@@ -6,7 +6,10 @@ import types.{
   type Row, AInstruction, CInstruction, Comment, Comp, Jump, LInstruction,
 }
 
-// TODO
+// TODO 基本版
+// 入力ファイルの parse も行う
+
+// TODO 完全版
 // SymbolTable はどこで保持するか？ -> 関数型なので、引数として渡す
 
 pub fn parser(raw_string: String) {
