@@ -2,6 +2,7 @@ import argv
 import gleam/io
 import gleam/list
 import gleam/result
+import parser
 import simplifile
 
 pub fn main() {
@@ -11,7 +12,9 @@ pub fn main() {
     simplifile.read(path) |> result.map_error(fn(_) { Nil }),
   )
 
-  io.debug(file)
+  let parsed = parser.parser(file)
+
+  io.debug(parsed)
 
   Ok(Nil)
 }
