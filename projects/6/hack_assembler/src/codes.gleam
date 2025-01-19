@@ -1,7 +1,6 @@
 //// Hackのシンボルとニーモニックをバイナリコードに変換する ためのサービスを提供する
 
 import gleam/int
-import gleam/io
 import gleam/list
 import gleam/option.{type Option, None, Some}
 import gleam/string
@@ -9,46 +8,17 @@ import types.{
   type Row, AInstruction, CInstruction, Comment, Comp, Jump, LInstruction,
 }
 
-// pub fn convert_into_bynaries2(rows: List(Row)) -> List(String) {
-//   // generate_bynary の結果が Some(String) の場合だけ抽出する
-//   rows
-//   |> list.fold([], fn(row, acc) {
-//     case generate_bynary(row) {
-//       Some(bynary) -> list.append(acc, [bynary])
-//       None -> acc
-//     }
-//   })
-// }
-
-pub fn convert_into_bynaries(
-  rows: List(Row),
-  bynaries: List(String),
-) -> List(String) {
-  case rows {
-    [] -> bynaries
-    [row] -> {
-      let generated = generate_bynary(row)
-      case generated {
-        Some(bynary) -> list.append(bynaries, [bynary])
-        None -> bynaries
-      }
+pub fn encode_rows(rows: List(Row)) -> List(String) {
+  rows
+  |> list.fold([], fn(acc, row) {
+    case encode_row(row) {
+      Some(bynary) -> list.append(acc, [bynary])
+      None -> acc
     }
-    [row, ..rest] -> {
-      io.debug(row)
-      let generated = generate_bynary(row)
-      io.debug(generated)
-      case generated {
-        Some(bynary) ->
-          convert_into_bynaries(rest, list.append(bynaries, [bynary]))
-        None -> {
-          convert_into_bynaries(rest, bynaries)
-        }
-      }
-    }
-  }
+  })
 }
 
-fn generate_bynary(row: Row) -> Option(String) {
+fn encode_row(row: Row) -> Option(String) {
   case row {
     // 2進数に変換する
     AInstruction(str_val) -> {
@@ -62,8 +32,10 @@ fn generate_bynary(row: Row) -> Option(String) {
     }
     CInstruction(comp_or_jump) -> {
       case comp_or_jump {
-        Comp(d, c) -> Some("111" <> comp(c) <> dest(d) <> "000")
-        Jump(d, j) -> Some("111" <> "0000000" <> dest(d) <> jump(j))
+        Comp(dest, comp) ->
+          Some("111" <> encode_comp(comp) <> encode_dest(dest) <> "000")
+        Jump(dest, jump) ->
+          Some("111" <> "0000000" <> encode_dest(dest) <> encode_jump(jump))
       }
     }
     LInstruction(str) -> todo
@@ -71,7 +43,7 @@ fn generate_bynary(row: Row) -> Option(String) {
   }
 }
 
-pub fn dest(str: String) {
+pub fn encode_dest(str: String) {
   case str {
     "M" -> "001"
     "D" -> "010"
@@ -84,7 +56,7 @@ pub fn dest(str: String) {
   }
 }
 
-pub fn comp(str: String) {
+pub fn encode_comp(str: String) {
   case str {
     "0" -> "0101010"
     "1" -> "0111111"
@@ -118,7 +90,7 @@ pub fn comp(str: String) {
   }
 }
 
-pub fn jump(str: String) {
+pub fn encode_jump(str: String) {
   case str {
     "JGT" -> "001"
     "JEQ" -> "010"

@@ -20,14 +20,14 @@ pub fn get_raw_string(args: List(String)) -> Result(String, Nil) {
   Ok(file)
 }
 
-pub fn to_list_and_trim(raw_string: String) -> List(String) {
+pub fn parse_lines(raw_string: String) -> List(String) {
   raw_string
   |> string.split("\n")
   |> list.map(fn(row) { string.trim(row) })
   |> list.filter(fn(row) { row != "" })
 }
 
-pub fn to_row(str: String) -> Row {
+pub fn parse_line(str: String) -> Row {
   case str {
     "//" <> _ -> Comment(str)
     "(" <> s -> {

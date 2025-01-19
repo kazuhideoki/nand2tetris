@@ -11,21 +11,19 @@ pub fn main() {
   use parsed <- result.try(
     parser.get_raw_string(argv.load().arguments)
     |> result.map(fn(raw_string) {
-      parser.to_list_and_trim(raw_string)
-      |> list.map(parser.to_row)
+      parser.parse_lines(raw_string)
+      |> list.map(parser.parse_line)
     }),
   )
 
   let _ = io.debug(parsed)
 
-  let result = codes.convert_into_bynaries(parsed, [])
-  io.debug(result)
+  let encoded_rows = codes.encode_rows(parsed)
+  io.debug(encoded_rows)
 
-  let _ =
-    simplifile.write(
-      to: "output/Output.hack",
-      contents: result |> list.map(fn(x) { x <> "\n" }) |> string.join(""),
-    )
+  let encoded_contents =
+    encoded_rows |> list.map(fn(x) { x <> "\n" }) |> string.join("")
+  let _ = simplifile.write(to: "output/Output.hack", contents: encoded_contents)
 
   Ok(Nil)
 }
