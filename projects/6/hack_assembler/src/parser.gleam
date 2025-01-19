@@ -11,12 +11,6 @@ import types.{
 // TODO 完全版
 // SymbolTable はどこで保持するか？ -> 関数型なので、引数として渡す
 
-pub fn parser(raw_string: String) {
-  raw_string
-  |> to_list_and_trim
-  |> list.map(fn(row) { to_row(row) })
-}
-
 pub fn get_raw_string(args: List(String)) -> Result(String, Nil) {
   use path <- result.try(list.first(args))
   use file <- result.try(
@@ -26,14 +20,14 @@ pub fn get_raw_string(args: List(String)) -> Result(String, Nil) {
   Ok(file)
 }
 
-fn to_list_and_trim(raw_string: String) -> List(String) {
+pub fn to_list_and_trim(raw_string: String) -> List(String) {
   raw_string
   |> string.split("\n")
   |> list.map(fn(row) { string.trim(row) })
   |> list.filter(fn(row) { row != "" })
 }
 
-fn to_row(str: String) -> Row {
+pub fn to_row(str: String) -> Row {
   case str {
     "//" <> _ -> Comment(str)
     "(" <> s -> {
