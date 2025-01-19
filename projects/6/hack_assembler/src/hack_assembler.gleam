@@ -5,6 +5,7 @@ import gleam/list
 import gleam/result
 import gleam/string
 import parser
+import simplifile
 
 pub fn main() {
   use parsed <- result.try(
@@ -18,8 +19,13 @@ pub fn main() {
   let _ = io.debug(parsed)
 
   let result = codes.convert_into_bynaries(parsed, [])
-  // io.debug(result |> list.map(fn(x) { x <> "\n" }) |> string.join(""))
   io.debug(result)
+
+  let _ =
+    simplifile.write(
+      to: "output/Output.hack",
+      contents: result |> list.map(fn(x) { x <> "\n" }) |> string.join(""),
+    )
 
   Ok(Nil)
 }

@@ -1,11 +1,9 @@
 //// Hackのシンボルとニーモニックをバイナリコードに変換する ためのサービスを提供する
 
-import gleam/bit_array
 import gleam/int
 import gleam/io
 import gleam/list
 import gleam/option.{type Option, None, Some}
-import gleam/result
 import gleam/string
 import types.{
   type Row, AInstruction, CInstruction, Comment, Comp, Jump, LInstruction,
@@ -49,14 +47,6 @@ pub fn convert_into_bynaries(
     }
   }
 }
-
-// 16bit ゼロ埋めバイナリ文字列へ変換
-// fn to_16bit_binary(num: Int) -> String {
-//   let bin = int.to_string_radix(num, 2)
-//   let pad_size = 16 - string.length(bin)
-//   let pad = string.repeat("0", pad_size)
-//   pad <> bin
-// }
 
 fn generate_bynary(row: Row) -> Option(String) {
   case row {
