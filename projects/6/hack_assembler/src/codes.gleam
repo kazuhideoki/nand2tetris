@@ -8,6 +8,10 @@ import types.{
   type Row, AInstruction, CInstruction, Comment, Comp, Jump, LInstruction,
 }
 
+// TODO for Max
+// 1 シンボルテーブルつくる -> 定数、ラベル、変数。一覧 -> p136
+// 2 jump に対応するために ラベルの保持
+
 pub fn encode_rows(rows: List(Row)) -> List(String) {
   rows
   |> list.fold([], fn(acc, row) {
@@ -27,7 +31,10 @@ fn encode_row(row: Row) -> Option(String) {
           let bits = int.to_base2(num) |> string.pad_start(16, "0")
           Some(bits)
         }
-        Error(_) -> None
+        Error(_) -> {
+          // TODO 数字以外はラベルとして扱う。登録する
+          None
+        }
       }
     }
     CInstruction(comp_or_jump) -> {

@@ -31,6 +31,7 @@ pub fn parse_line(str: String) -> Row {
   case str {
     "//" <> _ -> Comment(str)
     "(" <> s -> {
+      // TODO シンボルテーブルに登録
       let label_symbol = case s |> string.split(")") {
         [ls, _] -> ls
         _ -> panic
