@@ -13,7 +13,6 @@ import types.{
 type SimbolTable =
   #(Dict(String, Int), Int)
 
-// TODO for Max
 // 1 シンボルテーブルつくる -> 定数、ラベル、変数。一覧 -> p136
 // - Mapつかう
 // - 変数を登録するためのカウンターみたいなもの必要 RAM[16] から始まる
@@ -28,6 +27,12 @@ pub fn add_entry_to_simbol_table(rows: List(Row)) -> SimbolTable {
   let counter = 16
   rows
   |> list.fold(#(simbol_table, counter), fn(acc, row) { add_entry(row, acc) })
+}
+
+// TODO 適宜済みのシンボルを格納する
+fn init_simbol_table() -> SimbolTable {
+  // #(dict.new(), 16)
+  todo
 }
 
 fn add_entry(row: Row, simbol_table: SimbolTable) -> #(Dict(String, Int), Int) {
