@@ -52,6 +52,7 @@ fn encode_row(row: Row) -> Option(String) {
 
 pub fn encode_dest(str: String) {
   case str {
+    "0" -> "000"
     "M" -> "001"
     "D" -> "010"
     "DM" -> "011"
