@@ -18,7 +18,8 @@ pub fn main() {
 
   let _ = io.debug(parsed)
 
-  let encoded_rows = codes.encode_rows(parsed)
+  let simbol_table = codes.add_entry_to_simbol_table(parsed)
+  let encoded_rows = codes.encode_rows(parsed, simbol_table)
   io.debug(encoded_rows)
 
   let encoded_contents =
