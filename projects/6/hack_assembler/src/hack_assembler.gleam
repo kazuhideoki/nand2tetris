@@ -5,6 +5,7 @@ import gleam/list
 import gleam/result
 import gleam/string
 import parser
+import simbol
 import simplifile
 
 pub fn main() {
@@ -18,7 +19,7 @@ pub fn main() {
 
   let _ = io.debug(parsed)
 
-  let simbol_table = codes.add_entry_to_simbol_table(parsed)
+  let simbol_table = simbol.add_entry_to_simbol_table(parsed)
   let encoded_rows = codes.encode_rows(parsed, simbol_table)
   io.debug(encoded_rows)
 

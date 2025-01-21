@@ -5,13 +5,10 @@ import gleam/int
 import gleam/list
 import gleam/option.{type Option, None, Some}
 import gleam/string
+import simbol.{type SimbolTable, get_address_from_symbol_table}
 import types.{
   type Row, AInstruction, CInstruction, Comment, Comp, Jump, LInstruction,
 }
-
-// シンボルテーブル, シンボルテーブルのアドレスカウンター
-type SimbolTable =
-  #(Dict(String, Int), Int)
 
 // 1 シンボルテーブルつくる -> 定数、ラベル、変数。一覧 -> p136
 // - Mapつかう
@@ -21,44 +18,6 @@ type SimbolTable =
 // 2 jump に対応するために ラベルの保持
 // - 第1パスで ラベルだけを登録する -> 先に登録しないとjump 時に参照できない
 // - 第2パスで ラベルを参照する
-
-pub fn add_entry_to_simbol_table(rows: List(Row)) -> SimbolTable {
-  let simbol_table = dict.new()
-  let counter = 16
-  rows
-  |> list.fold(#(simbol_table, counter), fn(acc, row) { add_entry(row, acc) })
-}
-
-// TODO 適宜済みのシンボルを格納する
-fn init_simbol_table() -> SimbolTable {
-  // #(dict.new(), 16)
-  todo
-}
-
-fn add_entry(row: Row, simbol_table: SimbolTable) -> #(Dict(String, Int), Int) {
-  let #(simbol_table, counter) = simbol_table
-  case row {
-    LInstruction(label) -> {
-      #(dict.insert(simbol_table, label, counter), counter + 1)
-    }
-    _ -> #(simbol_table, counter)
-  }
-}
-
-fn get_address_from_symbol_table(
-  str: String,
-  simbol_table: SimbolTable,
-) -> #(Option(String), SimbolTable) {
-  let #(dict, counter) = simbol_table
-  case dict.get(dict, str) {
-    Ok(address) -> #(Some(to_binary(address)), simbol_table)
-    Error(_) -> {
-      let counter = counter + 1
-      let new_dict = dict.insert(dict, str, counter)
-      #(Some(to_binary(counter)), #(new_dict, counter))
-    }
-  }
-}
 
 pub fn encode_rows(rows: List(Row), simbol_table: SimbolTable) -> List(String) {
   let #(encoded_rows, _) =
