@@ -12,15 +12,6 @@ import types.{
   type Row, AInstruction, CInstruction, Comment, Comp, Jump, LInstruction,
 }
 
-// 1 シンボルテーブルつくる -> 定数、ラベル、変数。一覧 -> p136
-// - Mapつかう
-// - 変数を登録するためのカウンターみたいなもの必要 RAM[16] から始まる
-// - AInstruction, LInstruction の時に登録することがある
-
-// 2 jump に対応するために ラベルの保持
-// - 第1パスで ラベルだけを登録する -> 先に登録しないとjump 時に参照できない
-// - 第2パスで ラベルを参照する
-
 pub fn encode_rows(rows: List(Row), simbol_table: SimbolTable) -> List(String) {
   let #(encoded_rows, _) =
     rows

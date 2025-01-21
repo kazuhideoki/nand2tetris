@@ -13,7 +13,6 @@ import types.{
 pub type SimbolTable =
   #(Dict(String, Int), Int)
 
-// TODO 適宜済みのシンボルを格納する
 pub fn init_simbol_table() -> SimbolTable {
   // #("R0", 0) ~ #("R15", 15)までつくる
   let #(rs, _) =
@@ -47,17 +46,45 @@ pub fn add_entry_to_simbol_table(
   simbol_table: SimbolTable,
 ) -> SimbolTable {
   let #(table, counter) = simbol_table
+  // LInstruction で対応する行番号を保持する
+  let #(label_tables, _) =
+    rows
+    |> list.fold(#(dict.new(), 0), fn(acc, row) {
+      let #(table, row_counter) = acc
+      case row {
+        LInstruction(label) -> {
+          let new_table = dict.insert(table, label, row_counter)
+          #(new_table, row_counter)
+        }
+        Comment(_) -> acc
+        _ -> #(table, row_counter + 1)
+      }
+    })
+
+  io.debug("⭐️label_tables: ")
+  io.debug(label_tables)
+
+  // LInstruction で保持した行番号を参照して、シンボルテーブルに登録する
   rows
   |> list.fold(#(table, counter), fn(acc, row) {
+    let #(table, counter) = acc
     case row {
       LInstruction(label) -> {
-        io.debug("⭐️label")
-        io.debug(label)
-        let #(table, counter) = acc
-        let new_table = dict.insert(table, label, counter)
-        #(new_table, counter + 1)
+        let address = dict.get(label_tables, label)
+        case address {
+          Ok(address) -> #(dict.insert(table, label, address), counter + 1)
+          Error(_) -> {
+            io.debug(
+              "⭐️error occurred add_entry_to_simbol_table, label:"
+              <> label
+              <> ", counter:"
+              <> int.to_string(counter),
+            )
+            panic
+          }
+        }
       }
-      _ -> acc
+      _ -> #(table, counter)
     }
   })
 }

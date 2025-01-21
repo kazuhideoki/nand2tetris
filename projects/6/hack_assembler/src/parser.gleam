@@ -8,8 +8,7 @@ import types.{
   type Row, AInstruction, CInstruction, Comment, Comp, Jump, LInstruction,
 }
 
-// TODO 完全版
-// SymbolTable はどこで保持するか？ -> 関数型なので、引数として渡す
+// ⭐️ TODO comp は必須。dest or jump がからの場合がある。要修正
 
 pub fn get_raw_string(args: List(String)) -> Result(String, Nil) {
   use path <- result.try(list.first(args))
@@ -40,10 +39,10 @@ pub fn parse_line(str: String) -> Row {
     }
     "@" <> symbol -> AInstruction(symbol)
     c -> {
-      let splitted_equal = string.split(c, "=")
-      let splitted_semicolon = string.split(c, ";")
+      let split_equal = string.split(c, "=")
+      let split_semicolon = string.split(c, ";")
 
-      case splitted_equal, splitted_semicolon {
+      case split_equal, split_semicolon {
         [dest, comp], _ -> CInstruction(Comp(dest, comp))
         _, [dest, jump] -> CInstruction(Jump(dest, jump))
         _, _ -> panic
