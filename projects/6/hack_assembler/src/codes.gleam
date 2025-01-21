@@ -5,7 +5,9 @@ import gleam/int
 import gleam/list
 import gleam/option.{type Option, None, Some}
 import gleam/string
-import simbol.{type SimbolTable, get_address_from_symbol_table}
+import simbol.{
+  type SimbolTable, add_entry_to_simbol_table, get_address_from_symbol_table,
+}
 import types.{
   type Row, AInstruction, CInstruction, Comment, Comp, Jump, LInstruction,
 }
@@ -49,8 +51,17 @@ fn encode_row(
           #(Some(to_binary(num)), simbol_table)
         }
         Error(_) -> {
-          // TODO 数字以外はラベルとして扱う。登録する
-          #(None, simbol_table)
+          // // TODO 数字以外はラベルとして扱う。登録する
+          // #(None, simbol_table)
+          let #(table, _) = simbol_table
+          case dict.get(table, str_val) {
+            Ok(num) -> #(Some(to_binary(num)), simbol_table)
+            Error(_) -> {
+              let #(table, counter) = simbol_table
+              let new_table = dict.insert(table, str_val, counter)
+              #(Some(to_binary(counter)), #(new_table, counter + 1))
+            }
+          }
         }
       }
     }
@@ -66,7 +77,8 @@ fn encode_row(
         )
       }
     }
-    LInstruction(str) -> get_address_from_symbol_table(str, simbol_table)
+    // LInstruction(str) -> get_address_from_symbol_table(str, simbol_table)
+    LInstruction(_) -> #(None, simbol_table)
     Comment(_) -> #(None, simbol_table)
   }
 }
