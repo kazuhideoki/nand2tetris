@@ -38,24 +38,21 @@ fn encode_row(
     AInstruction(str_val) -> {
       // シンボルの時、参照 or 登録する
       case int.parse(str_val) {
-        Ok(num) -> {
-          #(Some(to_binary(num)), simbol_table)
-        }
+        // 数値リテラル @23
+        Ok(num) -> #(Some(to_binary(num)), simbol_table)
+        // シンボル @something
         Error(_) -> {
-          let #(table, _) = simbol_table
-          case dict.get(table, str_val) {
-            Ok(num) -> #(Some(to_binary(num)), simbol_table)
-            Error(_) -> {
-              let #(table, _) =
-                simbol.add_variable_to_simbol_table(str_val, simbol_table)
-              io.debug(
-                "⭐️error occurred add_variable_to_simbol_table, label:"
-                <> str_val,
-              )
-              let result_num = dict.get(table, str_val)
-              case result_num {
-                Ok(num) -> #(Some(to_binary(num)), simbol_table)
-                Error(_) -> panic
+          case simbol.get_address(simbol_table, str_val) {
+            Some(address) ->
+              // 既に辞書にあればそれを使う
+              #(Some(address), simbol_table)
+            None -> {
+              // 辞書になければ変数として登録
+              let new_table = simbol.add(str_val, simbol_table)
+              let new_addr = simbol.get_address(new_table, str_val)
+              case new_addr {
+                Some(addr) -> #(Some(addr), new_table)
+                None -> panic
               }
             }
           }
@@ -75,16 +72,13 @@ fn encode_row(
       }
     }
     LInstruction(str) -> {
-      let #(table, _) = simbol_table
-      case dict.get(table, str) {
-        Ok(_) -> #(None, simbol_table)
-        Error(_) -> {
-          let new_table = simbol.add_variable_to_simbol_table(str, simbol_table)
+      case simbol.get_address(simbol_table, str) {
+        Some(_) -> #(None, simbol_table)
+        None -> {
+          let new_table = simbol.add(str, simbol_table)
           #(None, new_table)
         }
       }
-      // 変数の場合、登録する
-      #(None, simbol_table)
     }
     Comment(_) -> #(None, simbol_table)
   }

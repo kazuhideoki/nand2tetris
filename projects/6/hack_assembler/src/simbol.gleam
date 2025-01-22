@@ -2,8 +2,9 @@ import gleam/dict.{type Dict}
 import gleam/int
 import gleam/io
 import gleam/list
-import gleam/option.{type Option, Some}
+import gleam/option.{type Option, None, Some}
 import gleam/string
+
 import types.{type Row, Comment, LInstruction}
 
 // シンボルテーブル, シンボルテーブルのアドレスカウンター
@@ -34,69 +35,101 @@ pub fn init_simbol_table() -> SimbolTable {
 }
 
 // 第一パス: ラベル定義 ( (LABEL) ) があれば対応するROM行番を記録する
+// pub fn add_entry_to_simbol_table(
+//   rows: List(Row),
+//   simbol_table: SimbolTable,
+// ) -> SimbolTable {
+//   let #(table, counter) = simbol_table
+//   let #(label_tables, _) =
+//     rows
+//     |> list.fold(#(dict.new(), 0), fn(acc, row) {
+//       let #(table, rom_addr) = acc
+//       case row {
+//         LInstruction(label) -> #(dict.insert(table, label, rom_addr), rom_addr)
+//         Comment(_) -> acc
+//         _ -> #(table, rom_addr + 1)
+//       }
+//     })
+
+//   io.debug(label_tables)
+
+//   rows
+//   |> list.fold(#(table, counter), fn(acc, row) {
+//     let #(table, counter) = acc
+//     case row {
+//       LInstruction(label) -> {
+//         let address = dict.get(label_tables, label)
+//         case address {
+//           Ok(rom_addr) -> #(dict.insert(table, label, rom_addr), counter)
+//           Error(_) -> {
+//             io.debug(
+//               "⭐️error occurred add_entry_to_simbol_table, label:"
+//               <> label
+//               <> ", counter:"
+//               <> int.to_string(counter),
+//             )
+//             panic
+//           }
+//         }
+//       }
+//       _ -> #(table, counter)
+//     }
+//   })
+// }
 pub fn add_entry_to_simbol_table(
   rows: List(Row),
   simbol_table: SimbolTable,
 ) -> SimbolTable {
-  let #(table, counter) = simbol_table
-  let #(label_tables, _) =
+  let #(table, var_counter) = simbol_table
+
+  // 1. L命令が何行目か (ROMアドレス) をラベルテーブルにまとめる
+  let #(label_table, _) =
     rows
     |> list.fold(#(dict.new(), 0), fn(acc, row) {
-      let #(table, rom_addr) = acc
+      let #(tmp_table, rom_addr) = acc
       case row {
-        LInstruction(label) -> #(dict.insert(table, label, rom_addr), rom_addr)
+        // ラベルが出てきた行番(rom_addr)を記憶しておく
+        LInstruction(label) -> #(
+          dict.insert(tmp_table, encode_for_dict(label), rom_addr),
+          rom_addr,
+        )
         Comment(_) -> acc
-        _ -> #(table, rom_addr + 1)
+        _ ->
+          // A命令やC命令ならROM上で1行分進む
+          #(tmp_table, rom_addr + 1)
       }
     })
 
-  rows
-  |> list.fold(#(table, counter), fn(acc, row) {
-    let #(table, counter) = acc
-    case row {
-      LInstruction(label) -> {
-        let address = dict.get(label_tables, label)
-        case address {
-          Ok(rom_addr) -> #(dict.insert(table, label, rom_addr), counter)
-          Error(_) -> {
-            io.debug(
-              "⭐️error occurred add_entry_to_simbol_table, label:"
-              <> label
-              <> ", counter:"
-              <> int.to_string(counter),
-            )
-            panic
-          }
-        }
-      }
-      _ -> #(table, counter)
+  // 2. ラベルテーブルに沿ってシンボルテーブルに登録
+  //    (ラベルを辞書に入れる時は変数カウンタは動かさない)
+  let new_table =
+    label_table
+    |> dict.fold(table, fn(acc, label, rom_addr) {
+      dict.insert(acc, label, rom_addr)
+    })
+
+  // 変数カウンタは変えない
+  #(new_table, var_counter)
+}
+
+pub fn get_address(simbol_table: SimbolTable, str: String) -> Option(String) {
+  let #(dict, _) = simbol_table
+  case dict.get(dict, encode_for_dict(str)) {
+    Ok(address) -> Some(to_binary(address))
+    Error(_) -> None
+  }
+}
+
+// TODO 既に入ってないか確認してから追加する
+pub fn add(str: String, simbol_table: SimbolTable) -> SimbolTable {
+  let #(dict, counter) = simbol_table
+  case get_address(simbol_table, str) {
+    Some(_) -> {
+      add(str, #(dict, counter + 1))
     }
-  })
-}
-
-// TODO dict で登録する時 `{str}.0` の形式はうまくいかない -> encode_for_dict, parse_from_dict で対応
-pub fn add_variable_to_simbol_table(
-  str: String,
-  simbol_table: SimbolTable,
-) -> SimbolTable {
-  io.debug("⭐️add_variable_to_simbol_table")
-  io.debug(str)
-  let #(dict, counter) = simbol_table
-  let new_dict = dict.insert(dict, str, counter)
-  #(new_dict, counter + 1)
-}
-
-pub fn get_address_from_symbol_table(
-  str: String,
-  simbol_table: SimbolTable,
-) -> #(Option(String), SimbolTable) {
-  let #(dict, counter) = simbol_table
-  case dict.get(dict, str) {
-    Ok(address) -> #(Some(to_binary(address)), simbol_table)
-    Error(_) -> {
-      let counter = counter + 1
-      let new_dict = dict.insert(dict, str, counter)
-      #(Some(to_binary(counter)), #(new_dict, counter))
+    None -> {
+      let new_dict = dict.insert(dict, encode_for_dict(str), counter)
+      #(new_dict, counter + 1)
     }
   }
 }
@@ -105,10 +138,10 @@ fn to_binary(num: Int) -> String {
   int.to_base2(num) |> string.pad_start(16, "0")
 }
 
-fn encode_for_dict() {
-  todo
+pub fn encode_for_dict(str: String) -> String {
+  string.replace(str, ".", "__")
 }
 
-fn parse_from_dict() {
-  todo
+fn parse_from_dict(str: String) -> String {
+  string.replace(str, "__", ".")
 }
