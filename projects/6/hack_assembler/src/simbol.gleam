@@ -11,16 +11,11 @@ pub type SimbolTable =
   #(Dict(String, Int), Int)
 
 pub fn init_simbol_table() -> SimbolTable {
-  // #("R0", 0) ~ #("R15", 15)までつくる
   let #(rs, _) =
     list.repeat(Nil, 16)
     |> list.fold(#([], 0), fn(acc, _) {
       let #(l, count) = acc
-      #(
-        l
-          |> list.append([#("R" <> int.to_string(count), count)]),
-        count + 1,
-      )
+      #(l |> list.append([#("R" <> int.to_string(count), count)]), count + 1)
     })
 
   #(
@@ -38,27 +33,23 @@ pub fn init_simbol_table() -> SimbolTable {
   )
 }
 
+// 第一パス: ラベル定義 ( (LABEL) ) があれば対応するROM行番を記録する
 pub fn add_entry_to_simbol_table(
   rows: List(Row),
   simbol_table: SimbolTable,
 ) -> SimbolTable {
   let #(table, counter) = simbol_table
-  // LInstruction で対応する行番号を保持する
   let #(label_tables, _) =
     rows
     |> list.fold(#(dict.new(), 0), fn(acc, row) {
-      let #(table, row_counter) = acc
+      let #(table, rom_addr) = acc
       case row {
-        LInstruction(label) -> {
-          let new_table = dict.insert(table, label, row_counter)
-          #(new_table, row_counter)
-        }
+        LInstruction(label) -> #(dict.insert(table, label, rom_addr), rom_addr)
         Comment(_) -> acc
-        _ -> #(table, row_counter + 1)
+        _ -> #(table, rom_addr + 1)
       }
     })
 
-  // LInstruction で保持した行番号を参照して、シンボルテーブルに登録する
   rows
   |> list.fold(#(table, counter), fn(acc, row) {
     let #(table, counter) = acc
@@ -66,7 +57,7 @@ pub fn add_entry_to_simbol_table(
       LInstruction(label) -> {
         let address = dict.get(label_tables, label)
         case address {
-          Ok(address) -> #(dict.insert(table, label, address), counter + 1)
+          Ok(rom_addr) -> #(dict.insert(table, label, rom_addr), counter)
           Error(_) -> {
             io.debug(
               "⭐️error occurred add_entry_to_simbol_table, label:"
@@ -81,6 +72,18 @@ pub fn add_entry_to_simbol_table(
       _ -> #(table, counter)
     }
   })
+}
+
+// TODO dict で登録する時 `{str}.0` の形式はうまくいかない -> encode_for_dict, parse_from_dict で対応
+pub fn add_variable_to_simbol_table(
+  str: String,
+  simbol_table: SimbolTable,
+) -> SimbolTable {
+  io.debug("⭐️add_variable_to_simbol_table")
+  io.debug(str)
+  let #(dict, counter) = simbol_table
+  let new_dict = dict.insert(dict, str, counter)
+  #(new_dict, counter + 1)
 }
 
 pub fn get_address_from_symbol_table(
@@ -100,4 +103,12 @@ pub fn get_address_from_symbol_table(
 
 fn to_binary(num: Int) -> String {
   int.to_base2(num) |> string.pad_start(16, "0")
+}
+
+fn encode_for_dict() {
+  todo
+}
+
+fn parse_from_dict() {
+  todo
 }

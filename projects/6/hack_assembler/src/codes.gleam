@@ -2,6 +2,7 @@
 
 import gleam/dict
 import gleam/int
+import gleam/io
 import gleam/list
 import gleam/option.{type Option, None, Some}
 import gleam/string
@@ -41,15 +42,21 @@ fn encode_row(
           #(Some(to_binary(num)), simbol_table)
         }
         Error(_) -> {
-          // // TODO 数字以外はラベルとして扱う。登録する
-          // #(None, simbol_table)
           let #(table, _) = simbol_table
           case dict.get(table, str_val) {
             Ok(num) -> #(Some(to_binary(num)), simbol_table)
             Error(_) -> {
-              let #(table, counter) = simbol_table
-              let new_table = dict.insert(table, str_val, counter)
-              #(Some(to_binary(counter)), #(new_table, counter + 1))
+              let #(table, _) =
+                simbol.add_variable_to_simbol_table(str_val, simbol_table)
+              io.debug(
+                "⭐️error occurred add_variable_to_simbol_table, label:"
+                <> str_val,
+              )
+              let result_num = dict.get(table, str_val)
+              case result_num {
+                Ok(num) -> #(Some(to_binary(num)), simbol_table)
+                Error(_) -> panic
+              }
             }
           }
         }
@@ -67,7 +74,18 @@ fn encode_row(
         )
       }
     }
-    LInstruction(_) -> #(None, simbol_table)
+    LInstruction(str) -> {
+      let #(table, _) = simbol_table
+      case dict.get(table, str) {
+        Ok(_) -> #(None, simbol_table)
+        Error(_) -> {
+          let new_table = simbol.add_variable_to_simbol_table(str, simbol_table)
+          #(None, new_table)
+        }
+      }
+      // 変数の場合、登録する
+      #(None, simbol_table)
+    }
     Comment(_) -> #(None, simbol_table)
   }
 }
@@ -78,6 +96,7 @@ pub fn encode_dest(str: String) {
     "M" -> "001"
     "D" -> "010"
     "DM" -> "011"
+    "MD" -> "011"
     "A" -> "100"
     "AM" -> "101"
     "AD" -> "110"
