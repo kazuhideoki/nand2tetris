@@ -5,7 +5,8 @@ import gleam/result
 import gleam/string
 import simplifile
 import types.{
-  type Row, AInstruction, CInstruction, Comment, Comp, Jump, LInstruction,
+  type Row, AInstruction, CInstruction, Comment, CompAndJump, DestAndComp,
+  LInstruction,
 }
 
 // ⭐️ TODO comp は必須。dest or jump がからの場合がある。要修正
@@ -43,8 +44,8 @@ pub fn parse_line(str: String) -> Row {
       let split_semicolon = string.split(c, ";")
 
       case split_equal, split_semicolon {
-        [dest, comp], _ -> CInstruction(Comp(dest, comp))
-        _, [dest, jump] -> CInstruction(Jump(dest, jump))
+        [dest, comp], _ -> CInstruction(DestAndComp(dest, comp))
+        _, [comp, jump] -> CInstruction(CompAndJump(comp, jump))
         _, _ -> panic
       }
     }

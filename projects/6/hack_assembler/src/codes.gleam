@@ -1,15 +1,14 @@
 //// Hackのシンボルとニーモニックをバイナリコードに変換する ためのサービスを提供する
 
-import gleam/dict.{type Dict}
+import gleam/dict
 import gleam/int
 import gleam/list
 import gleam/option.{type Option, None, Some}
 import gleam/string
-import simbol.{
-  type SimbolTable, add_entry_to_simbol_table, get_address_from_symbol_table,
-}
+import simbol.{type SimbolTable}
 import types.{
-  type Row, AInstruction, CInstruction, Comment, Comp, Jump, LInstruction,
+  type Row, AInstruction, CInstruction, Comment, CompAndJump, DestAndComp,
+  LInstruction,
 }
 
 pub fn encode_rows(rows: List(Row), simbol_table: SimbolTable) -> List(String) {
@@ -56,19 +55,18 @@ fn encode_row(
         }
       }
     }
-    CInstruction(comp_or_jump) -> {
-      case comp_or_jump {
-        Comp(dest, comp) -> #(
+    CInstruction(dettail) -> {
+      case dettail {
+        DestAndComp(dest, comp) -> #(
           Some("111" <> encode_comp(comp) <> encode_dest(dest) <> "000"),
           simbol_table,
         )
-        Jump(dest, jump) -> #(
-          Some("111" <> "0000000" <> encode_dest(dest) <> encode_jump(jump)),
+        CompAndJump(comp, jump) -> #(
+          Some("111" <> encode_comp(comp) <> "000" <> encode_jump(jump)),
           simbol_table,
         )
       }
     }
-    // LInstruction(str) -> get_address_from_symbol_table(str, simbol_table)
     LInstruction(_) -> #(None, simbol_table)
     Comment(_) -> #(None, simbol_table)
   }

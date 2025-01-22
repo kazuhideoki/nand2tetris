@@ -1,11 +1,11 @@
 pub type Row {
   AInstruction(str: String)
-  CInstruction(CompOrJump)
+  CInstruction(CInstructionDetail)
   LInstruction(str: String)
   Comment(str: String)
 }
 
-pub type CompOrJump {
-  Comp(dest: String, comp: String)
-  Jump(dest: String, jump: String)
+pub type CInstructionDetail {
+  DestAndComp(dest: String, comp: String)
+  CompAndJump(comp: String, jump: String)
 }

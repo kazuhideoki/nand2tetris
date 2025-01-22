@@ -1,13 +1,10 @@
 import gleam/dict.{type Dict}
-import gleam/dynamic
 import gleam/int
 import gleam/io
 import gleam/list
-import gleam/option.{type Option, None, Some}
+import gleam/option.{type Option, Some}
 import gleam/string
-import types.{
-  type Row, AInstruction, CInstruction, Comment, Comp, Jump, LInstruction,
-}
+import types.{type Row, Comment, LInstruction}
 
 // シンボルテーブル, シンボルテーブルのアドレスカウンター
 pub type SimbolTable =
@@ -61,9 +58,6 @@ pub fn add_entry_to_simbol_table(
       }
     })
 
-  io.debug("⭐️label_tables: ")
-  io.debug(label_tables)
-
   // LInstruction で保持した行番号を参照して、シンボルテーブルに登録する
   rows
   |> list.fold(#(table, counter), fn(acc, row) {
@@ -87,16 +81,6 @@ pub fn add_entry_to_simbol_table(
       _ -> #(table, counter)
     }
   })
-}
-
-fn add_entry(row: Row, simbol_table: SimbolTable) -> #(Dict(String, Int), Int) {
-  let #(simbol_table, counter) = simbol_table
-  case row {
-    LInstruction(label) -> {
-      #(dict.insert(simbol_table, label, counter), counter + 1)
-    }
-    _ -> #(simbol_table, counter)
-  }
 }
 
 pub fn get_address_from_symbol_table(
