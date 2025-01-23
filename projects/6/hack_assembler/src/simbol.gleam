@@ -124,9 +124,7 @@ pub fn get_address(simbol_table: SimbolTable, str: String) -> Option(String) {
 pub fn add(str: String, simbol_table: SimbolTable) -> SimbolTable {
   let #(dict, counter) = simbol_table
   case get_address(simbol_table, str) {
-    Some(_) -> {
-      add(str, #(dict, counter + 1))
-    }
+    Some(_) -> simbol_table
     None -> {
       let new_dict = dict.insert(dict, encode_for_dict(str), counter)
       #(new_dict, counter + 1)
