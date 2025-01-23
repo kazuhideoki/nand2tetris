@@ -1,16 +1,11 @@
 //// Hackのシンボルとニーモニックをバイナリコードに変換する ためのサービスを提供する
 
-import gleam/dict
 import gleam/int
-import gleam/io
 import gleam/list
 import gleam/option.{type Option, None, Some}
 import gleam/string
 import simbol.{type SimbolTable}
-import types.{
-  type Row, AInstruction, CInstruction, Comment, CompAndJump, DestAndComp,
-  LInstruction,
-}
+import types.{type Row, AInstruction, CInstruction, CompAndJump, DestAndComp}
 
 pub fn encode_rows(rows: List(Row), simbol_table: SimbolTable) -> List(String) {
   let #(encoded_rows, _) =
@@ -42,7 +37,7 @@ fn encode_row(
         Ok(num) -> #(Some(to_binary(num)), simbol_table)
         // シンボル @something
         Error(_) -> {
-          case simbol.get_address(simbol_table, str_val) {
+          case siimbol.get_address(simbol_table, str_val) {
             Some(address) ->
               // 既に辞書にあればそれを使う
               #(Some(address), simbol_table)
@@ -71,16 +66,7 @@ fn encode_row(
         )
       }
     }
-    LInstruction(str) -> {
-      case simbol.get_address(simbol_table, str) {
-        Some(_) -> #(None, simbol_table)
-        None -> {
-          let new_table = simbol.add(str, simbol_table)
-          #(None, new_table)
-        }
-      }
-    }
-    Comment(_) -> #(None, simbol_table)
+    _ -> #(None, simbol_table)
   }
 }
 

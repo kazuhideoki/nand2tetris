@@ -9,8 +9,6 @@ import types.{
   LInstruction,
 }
 
-// ⭐️ TODO comp は必須。dest or jump がからの場合がある。要修正
-
 pub fn get_raw_string(args: List(String)) -> Result(String, Nil) {
   use path <- result.try(list.first(args))
   use file <- result.try(
