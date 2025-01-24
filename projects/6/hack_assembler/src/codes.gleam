@@ -37,7 +37,7 @@ fn encode_row(
         Ok(num) -> #(Some(to_binary(num)), simbol_table)
         // シンボル @something
         Error(_) -> {
-          case siimbol.get_address(simbol_table, str_val) {
+          case simbol.get_address(simbol_table, str_val) {
             Some(address) ->
               // 既に辞書にあればそれを使う
               #(Some(address), simbol_table)
