@@ -9,7 +9,6 @@ import state.{type State}
 
 pub fn generate_first_lines(state: State) -> List(String) {
   let #(_, memory_segment) = state
-  // let sp = state.get_segment(memory_segment, "SP")
   let option_sp = state.get_segment(memory_segment, "SP")
   case option_sp {
     Some(sp) -> {
@@ -17,6 +16,10 @@ pub fn generate_first_lines(state: State) -> List(String) {
     }
     None -> panic
   }
+}
+
+pub fn generate_last_lines() {
+  ["(END)", "@END", "0;JMP"]
 }
 
 /// 算術論理コマンドの command に対応するアセンブリコードを出力ファイルに書き込む。
@@ -36,8 +39,6 @@ pub fn write_arithmetic(command_type: CommandType) -> List(String) {
 pub fn write_push_pop(command_type: CommandType) -> List(String) {
   case command_type {
     CPush(segment, index) -> {
-      io.debug("write_push_pop, push")
-      io.debug(index)
       case segment {
         Constant -> [
           "@" <> int.to_string(index),
@@ -49,7 +50,7 @@ pub fn write_push_pop(command_type: CommandType) -> List(String) {
           "M=M+1",
         ]
         _ -> panic
-        // または必要な実装を追加
+        // 必要な実装を追加
       }
     }
     CPop(segment, index) -> {
@@ -64,7 +65,7 @@ pub fn write_push_pop(command_type: CommandType) -> List(String) {
           "M=M-1",
         ]
         _ -> panic
-        // または必要な実装を追加
+        // 必要な実装を追加
       }
     }
     _ -> {

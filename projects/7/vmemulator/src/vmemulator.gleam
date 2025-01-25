@@ -54,6 +54,8 @@ pub fn main() {
         }
       },
     )
+  let assembled_lines =
+    assembled_lines |> list.append(code_writer.generate_last_lines())
   io.debug("⭐️")
   io.debug(assembled_lines)
   io.debug("🟠")
