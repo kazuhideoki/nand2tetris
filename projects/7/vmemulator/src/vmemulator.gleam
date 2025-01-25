@@ -22,45 +22,47 @@ pub fn main() {
 
   let state = state.init()
 
-  let assembled_lines =
+  let #(assembled_lines, final_state) =
     parsed
-    |> list.fold(#([], state), fn(acc, command_type) {
-      let #(assembled, state) = acc
-      case command_type {
-        parser.CArithmetic(_) -> {
-          let new_state = state.add(state)
-          #(
-            assembled |> list.append(code_writer.write_arithmetic(command_type)),
-            new_state,
-          )
+    |> list.fold(
+      #(code_writer.generate_first_lines(state), state),
+      fn(acc, command_type) {
+        let #(assembled, state) = acc
+        case command_type {
+          parser.CArithmetic(_) -> {
+            let new_state = state.add(state)
+            #(
+              assembled
+                |> list.append(code_writer.write_arithmetic(command_type)),
+              new_state,
+            )
+          }
+          parser.CPush(_, value) -> {
+            let new_state = state.push(state, state.SInt(value))
+            #(
+              assembled |> list.append(code_writer.write_push_pop(command_type)),
+              new_state,
+            )
+          }
+          parser.CPop(_, value) -> {
+            let new_state = state.push(state, state.SInt(value))
+            #(
+              assembled |> list.append(code_writer.write_push_pop(command_type)),
+              new_state,
+            )
+          }
         }
-        parser.CPush(segment, value) -> {
-          let new_state = state.push(state, state.SInt(value))
-          #(
-            assembled |> list.append(code_writer.write_push_pop(command_type)),
-            new_state,
-          )
-        }
-        parser.CPop(segment, value) -> {
-          let new_state = state.push(state, state.SInt(value))
-          #(
-            assembled |> list.append(code_writer.write_push_pop(command_type)),
-            new_state,
-          )
-        }
-        _ -> panic
-      }
-    })
-
+      },
+    )
+  io.debug("⭐️")
   io.debug(assembled_lines)
+  io.debug("🟠")
+  io.debug(final_state)
 
-  let #(encoded_lines, _) = assembled_lines
+  let raw_file =
+    assembled_lines |> list.map(fn(x) { x <> "\n" }) |> string.join("")
 
-  let encoded_contents =
-    encoded_lines |> list.map(fn(x) { x <> "\n" }) |> string.join("")
-
-  io.debug(encoded_contents)
-  let _ = simplifile.write(to: "output/Output.asm", contents: encoded_contents)
+  let _ = simplifile.write(to: "output/Output.asm", contents: raw_file)
 
   Ok(Nil)
 }

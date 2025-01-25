@@ -64,7 +64,7 @@ pub fn add(state: State) -> State {
   updated_state
 }
 
-fn get_segment(segment: MemorySegment, key: String) -> Option(Int) {
+pub fn get_segment(segment: MemorySegment, key: String) -> Option(Int) {
   case dict.get(segment, key) {
     Ok(value) -> Some(value)
     Error(_) -> None
