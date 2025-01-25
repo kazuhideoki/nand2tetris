@@ -1,5 +1,6 @@
 //// このモジュールは、1つの . vmファイルの解析を行う。P a r s e r は、VMコードを 読み取り、コマンドをいくつかの構成要素に分解し、その構成要素にアクセスする ためのサービスを提供する。
 
+import gleam/int
 import gleam/list
 import gleam/result
 import gleam/string
@@ -7,8 +8,21 @@ import simplifile
 
 pub type CommandType {
   CArithmetic(String)
-  CPush(String)
-  CPop(String)
+  // push segment index
+  CPush(Segment, Int)
+  // pop segment index
+  CPop(Segment, Int)
+}
+
+pub type Segment {
+  Local
+  Argument
+  This
+  That
+  Pointer
+  Temp
+  Constant
+  Static
 }
 
 pub fn get_raw_string(args: List(String)) -> Result(String, Nil) {
@@ -30,8 +44,50 @@ pub fn parse_lines(raw_string: String) -> List(String) {
 
 pub fn parse_line(str: String) -> CommandType {
   case str {
-    "push" <> _ -> CPush(str)
-    "pop" <> _ -> CPop(str)
+    "push" <> segment_and_index -> {
+      let parts =
+        segment_and_index
+        |> string.trim
+        |> string.split(" ")
+      case parts {
+        [segment, index_str] -> {
+          case segment, int.parse(index_str) {
+            "local", Ok(index) -> CPush(Local, index)
+            "argument", Ok(index) -> CPush(Argument, index)
+            "this", Ok(index) -> CPush(This, index)
+            "that", Ok(index) -> CPush(That, index)
+            "pointer", Ok(index) -> CPush(Pointer, index)
+            "temp", Ok(index) -> CPush(Temp, index)
+            "constant", Ok(index) -> CPush(Constant, index)
+            "static", Ok(index) -> CPush(Static, index)
+            _, _ -> panic
+          }
+        }
+        _ -> panic
+      }
+    }
+    "pop" <> segment_and_index -> {
+      let parts =
+        segment_and_index
+        |> string.trim
+        |> string.split(" ")
+      case parts {
+        [segment, index_str] -> {
+          case segment, int.parse(index_str) {
+            "local", Ok(index) -> CPop(Local, index)
+            "argument", Ok(index) -> CPop(Argument, index)
+            "this", Ok(index) -> CPop(This, index)
+            "that", Ok(index) -> CPop(That, index)
+            "pointer", Ok(index) -> CPop(Pointer, index)
+            "temp", Ok(index) -> CPop(Temp, index)
+            "constant", Ok(index) -> CPop(Constant, index)
+            "static", Ok(index) -> CPop(Static, index)
+            _, _ -> panic
+          }
+        }
+        _ -> panic
+      }
+    }
     str
       if str == "add"
       || str == "sub"

@@ -8,7 +8,7 @@ pub type StackValue {
   SBool(Bool)
 }
 
-pub fn new() -> Stack {
+pub fn init() -> Stack {
   []
 }
 
