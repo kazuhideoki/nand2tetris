@@ -1,10 +1,15 @@
-//// Parser 入力を解析して一連の命令の行にして、さらに各行をフィールドに分解する
+//// このモジュールは、1つの . vmファイルの解析を行う。P a r s e r は、VMコードを 読み取り、コマンドをいくつかの構成要素に分解し、その構成要素にアクセスする ためのサービスを提供する。
 
 import gleam/list
 import gleam/result
 import gleam/string
 import simplifile
-import types.{type Row, CArithmetic, CPop, CPush}
+
+pub type CommandType {
+  CArithmetic(String)
+  CPush(String)
+  CPop(String)
+}
 
 pub fn get_raw_string(args: List(String)) -> Result(String, Nil) {
   use path <- result.try(list.first(args))
@@ -23,7 +28,7 @@ pub fn parse_lines(raw_string: String) -> List(String) {
   |> list.filter(fn(row) { string.starts_with(row, "//") == False })
 }
 
-pub fn parse_line(str: String) -> Row {
+pub fn parse_line(str: String) -> CommandType {
   case str {
     "push" <> _ -> CPush(str)
     "pop" <> _ -> CPop(str)
