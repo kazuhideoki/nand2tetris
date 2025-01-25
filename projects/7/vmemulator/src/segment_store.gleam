@@ -18,7 +18,7 @@ pub fn init() -> SegmentStore {
   ])
 }
 
-pub fn get_segment(segment_store: SegmentStore, key: String) -> Option(Int) {
+pub fn get(segment_store: SegmentStore, key: String) -> Option(Int) {
   case dict.get(segment_store, key) {
     Ok(value) -> Some(value)
     Error(_) -> None

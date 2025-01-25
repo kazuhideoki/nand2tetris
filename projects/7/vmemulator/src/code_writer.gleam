@@ -8,7 +8,7 @@ import parser.{type CommandType, CArithmetic, CPop, CPush, Constant}
 import segment_store.{type SegmentStore}
 
 pub fn generate_first_lines(segment_store: SegmentStore) -> List(String) {
-  let option_sp = segment_store.get_segment(segment_store, "SP")
+  let option_sp = segment_store.get(segment_store, "SP")
   case option_sp {
     Some(sp) -> {
       ["@" <> int.to_string(sp), "D=A", "@SP", "M=D"]
@@ -28,6 +28,17 @@ pub fn write_arithmetic(command_type: CommandType) -> List(String) {
       case value {
         // ポインタ取得 -> スタック最上段の値取得 -> Dに格納 -> スタックのもう一段下の値取得 -> Dを加算して同じ位置に格納
         "add" -> ["@SP", "AM=M-1", "D=M", "A=A-1", "M=M+D"]
+        "sub" -> ["@SP", "AM=M-1", "D=M", "A=A-1", "M=M-D"]
+        "eq" -> {
+          // 片方not -> & -> 0かどうか?
+          todo
+        }
+        "lt" -> todo
+        "gt" -> todo
+        "neg" -> ["@SP", "AM=M-1", "M=-M"]
+        "and" -> ["@SP", "AM=M-1", "D=M", "A=A-1", "M=M&D"]
+        "or" -> ["@SP", "AM=M-1", "D=M", "A=A-1", "M=M|D"]
+        "not" -> ["@SP", "AM=M-1", "D=M", "A=A-1", "M=!M"]
         _ -> panic
       }
     _ -> panic
