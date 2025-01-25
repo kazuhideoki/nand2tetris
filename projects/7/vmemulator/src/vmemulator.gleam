@@ -5,8 +5,8 @@ import gleam/list
 import gleam/result
 import gleam/string
 import parser
+import segment_store
 import simplifile
-import state
 
 pub fn main() {
   use parsed <- result.try(
@@ -20,35 +20,44 @@ pub fn main() {
   )
   io.debug(parsed)
 
-  let state = state.init()
+  let segment_store = segment_store.init()
 
   let #(assembled_lines, final_state) =
     parsed
     |> list.fold(
-      #(code_writer.generate_first_lines(state), state),
+      #(code_writer.generate_first_lines(segment_store), segment_store),
       fn(acc, command_type) {
         let #(assembled, state) = acc
         case command_type {
           parser.CArithmetic(_) -> {
-            let new_state = state.add(state)
+            // TODO なんらかの segment の操作？
             #(
               assembled
                 |> list.append(code_writer.write_arithmetic(command_type)),
-              new_state,
+              segment_store,
             )
           }
-          parser.CPush(_, value) -> {
-            let new_state = state.push(state, state.SInt(value))
+          parser.CPush(segment, value) -> {
+            let new_segment = case segment {
+              parser.Constant -> segment_store.increment_sp(segment_store)
+              _ -> panic
+            }
+
             #(
               assembled |> list.append(code_writer.write_push_pop(command_type)),
-              new_state,
+              new_segment,
             )
           }
-          parser.CPop(_, value) -> {
-            let new_state = state.push(state, state.SInt(value))
+          parser.CPop(segment, value) -> {
+            let new_segment = case segment {
+              // TODO まだ不完全。なんらかの segment の操作？
+              parser.Constant -> segment_store.decrement_sp(segment_store)
+              _ -> panic
+            }
+
             #(
               assembled |> list.append(code_writer.write_push_pop(command_type)),
-              new_state,
+              new_segment,
             )
           }
         }
@@ -56,6 +65,7 @@ pub fn main() {
     )
   let assembled_lines =
     assembled_lines |> list.append(code_writer.generate_last_lines())
+
   io.debug("⭐️")
   io.debug(assembled_lines)
   io.debug("🟠")

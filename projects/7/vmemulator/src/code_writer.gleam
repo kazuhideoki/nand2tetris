@@ -5,11 +5,10 @@ import gleam/int
 import gleam/io
 import gleam/option.{None, Some}
 import parser.{type CommandType, CArithmetic, CPop, CPush, Constant}
-import state.{type State}
+import segment_store.{type SegmentStore}
 
-pub fn generate_first_lines(state: State) -> List(String) {
-  let #(_, memory_segment) = state
-  let option_sp = state.get_segment(memory_segment, "SP")
+pub fn generate_first_lines(segment_store: SegmentStore) -> List(String) {
+  let option_sp = segment_store.get_segment(segment_store, "SP")
   case option_sp {
     Some(sp) -> {
       ["@" <> int.to_string(sp), "D=A", "@SP", "M=D"]
