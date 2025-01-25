@@ -35,11 +35,13 @@ pub fn init() -> State {
   )
 }
 
+/// TODO 他セグメントの処理
 pub fn push(state: State, value: StackValue) -> State {
   let #(stack, memory_segment) = state
   #(list.prepend(to: stack, this: value), increment_sp(memory_segment))
 }
 
+/// TODO 他セグメントの処理
 pub fn pop(state: State) -> #(State, StackValue) {
   let #(stack, memory_segment) = state
   case stack {
@@ -48,6 +50,7 @@ pub fn pop(state: State) -> #(State, StackValue) {
   }
 }
 
+/// TODO 統一的な算術コマンドでラップする
 pub fn add(state: State) -> State {
   let #(state1, value1) = pop(state)
   let #(state2, value2) = pop(state1)
