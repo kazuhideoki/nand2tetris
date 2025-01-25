@@ -8,7 +8,7 @@ pub type MemorySegment =
 
 pub fn init() -> MemorySegment {
   dict.from_list([
-    #("SP", 0),
+    #("SP", 256),
     #("LCL", 1),
     #("ARG", 2),
     #("THIS", 3),
@@ -31,6 +31,15 @@ pub fn increment_sp(segment: MemorySegment) -> MemorySegment {
   dict.upsert(segment, "SP", fn(value) {
     case value {
       Some(value) -> value + 1
+      None -> panic
+    }
+  })
+}
+
+pub fn decrement_sp(segment: MemorySegment) -> MemorySegment {
+  dict.upsert(segment, "SP", fn(value) {
+    case value {
+      Some(value) -> value - 1
       None -> panic
     }
   })
