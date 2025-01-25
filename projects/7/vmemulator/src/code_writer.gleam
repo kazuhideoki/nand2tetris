@@ -30,10 +30,12 @@ pub fn write_arithmetic(command_type: CommandType) -> List(String) {
         "add" -> ["@SP", "AM=M-1", "D=M", "A=A-1", "M=M+D"]
         "sub" -> ["@SP", "AM=M-1", "D=M", "A=A-1", "M=M-D"]
         "eq" -> {
-          // 片方not -> & -> 0かどうか?
+          // 片方not -> & -> 0かどうか?(0なら1, 違うなら0)
           todo
         }
-        "lt" -> todo
+        "lt" -> {
+          todo
+        }
         "gt" -> todo
         "neg" -> ["@SP", "AM=M-1", "M=-M"]
         "and" -> ["@SP", "AM=M-1", "D=M", "A=A-1", "M=M&D"]
