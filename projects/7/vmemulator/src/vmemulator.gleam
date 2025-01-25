@@ -3,7 +3,9 @@ import code_writer
 import gleam/io
 import gleam/list
 import gleam/result
+import gleam/string
 import parser
+import simplifile
 import state
 
 pub fn main() {
@@ -51,6 +53,14 @@ pub fn main() {
     })
 
   io.debug(assembled_lines)
+
+  let #(encoded_lines, _) = assembled_lines
+
+  let encoded_contents =
+    encoded_lines |> list.map(fn(x) { x <> "\n" }) |> string.join("")
+
+  io.debug(encoded_contents)
+  let _ = simplifile.write(to: "output/Output.asm", contents: encoded_contents)
 
   Ok(Nil)
 }
