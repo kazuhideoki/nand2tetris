@@ -39,36 +39,14 @@ pub fn main() {
               updated_counter,
             )
           }
-          parser.CPush(segment, value) -> {
-            let new_segment = case segment {
-              parser.Constant -> segment_store.increment_sp(segment_store)
-              _ -> panic
-            }
-
+          parser.CPush(segment, value) | parser.CPop(segment, value) -> {
             #(
               assembled_list
                 |> list.append(code_writer.write_push_pop(
                   command_type,
                   segment_store,
                 )),
-              new_segment,
-              label_counter,
-            )
-          }
-          parser.CPop(segment, value) -> {
-            let new_segment = case segment {
-              // TODO まだ不完全。なんらかの segment の操作？
-              parser.Constant -> segment_store.decrement_sp(segment_store)
-              _ -> panic
-            }
-
-            #(
-              assembled_list
-                |> list.append(code_writer.write_push_pop(
-                  command_type,
-                  segment_store,
-                )),
-              new_segment,
+              segment_store,
               label_counter,
             )
           }

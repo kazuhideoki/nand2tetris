@@ -24,21 +24,3 @@ pub fn get(segment_store: SegmentStore, key: String) -> Option(Int) {
     Error(_) -> None
   }
 }
-
-pub fn increment_sp(segment_store: SegmentStore) -> SegmentStore {
-  dict.upsert(segment_store, "SP", fn(value) {
-    case value {
-      Some(value) -> value + 1
-      None -> panic
-    }
-  })
-}
-
-pub fn decrement_sp(segment_store: SegmentStore) -> SegmentStore {
-  dict.upsert(segment_store, "SP", fn(value) {
-    case value {
-      Some(value) -> value - 1
-      None -> panic
-    }
-  })
-}
