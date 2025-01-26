@@ -47,7 +47,10 @@ pub fn main() {
 
             #(
               assembled_list
-                |> list.append(code_writer.write_push_pop(command_type)),
+                |> list.append(code_writer.write_push_pop(
+                  command_type,
+                  segment_store,
+                )),
               new_segment,
               label_counter,
             )
@@ -61,7 +64,10 @@ pub fn main() {
 
             #(
               assembled_list
-                |> list.append(code_writer.write_push_pop(command_type)),
+                |> list.append(code_writer.write_push_pop(
+                  command_type,
+                  segment_store,
+                )),
               new_segment,
               label_counter,
             )

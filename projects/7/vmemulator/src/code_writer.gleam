@@ -121,34 +121,27 @@ pub fn write_arithmetic(
 }
 
 /// pushまたはpopの command に対応するアセンブリコードを出力ファイルに書き込む。
-pub fn write_push_pop(command_type: CommandType) -> List(String) {
+pub fn write_push_pop(
+  command_type: CommandType,
+  segment_store: SegmentStore,
+) -> List(String) {
   case command_type {
     CPush(segment, index) -> {
+      let segment_code = generate_by_segment(segment, index, segment_store)
       case segment {
-        Constant -> [
-          "@" <> int.to_string(index),
-          "D=A",
-          "@SP",
-          "A=M",
-          "M=D",
-          "@SP",
-          "M=M+1",
-        ]
+        Constant ->
+          segment_code
+          |> list.append(["@SP", "A=M", "M=D", "@SP", "M=M+1"])
         _ -> panic
         // 必要な実装を追加
       }
     }
     CPop(segment, index) -> {
+      let segment_code = generate_by_segment(segment, index, segment_store)
+      // 🔶 TODO 不完全なので修正
       case segment {
-        Constant -> [
-          "@" <> int.to_string(index),
-          "D=A",
-          "@SP",
-          "A=M",
-          "M=D",
-          "@SP",
-          "M=M-1",
-        ]
+        Constant ->
+          segment_code |> list.append(["@SP", "A=M", "M=D", "@SP", "M=M-1"])
         _ -> panic
         // 必要な実装を追加
       }
@@ -157,5 +150,18 @@ pub fn write_push_pop(command_type: CommandType) -> List(String) {
       io.println_error("not implemented")
       panic
     }
+  }
+}
+
+/// 🔶 TODO constant 意外にも対応する
+/// constant(現状)に加え、local, argument, this, that, temp
+fn generate_by_segment(
+  segment: parser.Segment,
+  index: Int,
+  segment_store: SegmentStore,
+) -> List(String) {
+  case segment {
+    Constant -> ["@" <> int.to_string(index), "D=A"]
+    _ -> panic
   }
 }
