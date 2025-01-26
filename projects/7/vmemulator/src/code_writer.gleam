@@ -40,7 +40,6 @@ pub fn write_arithmetic(
           ["@SP", "AM=M-1", "D=M", "A=A-1", "M=M-D"],
           label_counter + 1,
         )
-        // 条件分岐ができるのは jump だけ。これを利用する
         "eq" -> {
           let eq_true_label = "EQ_TRUE_" <> int.to_string(label_counter)
           let eq_end_label = "EQ_END_" <> int.to_string(label_counter)
@@ -109,10 +108,12 @@ pub fn write_arithmetic(
             label_counter + 1,
           )
         }
-        "neg" -> #(["@SP", "AM=M-1", "M=-M"], label_counter)
+        // "neg" -> #(["@SP", "AM=M-1", "M=-M"], label_counter)
+        // SPデクリメントせずに、そのアドレスの値を反転するだけ
+        "neg" -> #(["@SP", "A=M-1", "M=-M"], label_counter)
         "and" -> #(["@SP", "AM=M-1", "D=M", "A=A-1", "M=M&D"], label_counter)
         "or" -> #(["@SP", "AM=M-1", "D=M", "A=A-1", "M=M|D"], label_counter)
-        "not" -> #(["@SP", "AM=M-1", "M=!M"], label_counter)
+        "not" -> #(["@SP", "A=M-1", "M=!M"], label_counter)
         _ -> panic
       }
     _ -> panic

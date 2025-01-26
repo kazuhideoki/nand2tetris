@@ -18,11 +18,10 @@ pub fn main() {
       |> list.map(parser.parse_line)
     }),
   )
-  io.debug(parsed)
 
   let segment_store = segment_store.init()
 
-  let #(assembled_lines, final_state, _) =
+  let #(assembled_lines, final_segment, _) =
     parsed
     |> list.fold(
       #(code_writer.generate_first_lines(segment_store), segment_store, 0),
@@ -76,7 +75,7 @@ pub fn main() {
   io.debug("⭐️")
   io.debug(assembled_lines)
   io.debug("🟠")
-  io.debug(final_state)
+  io.debug(final_segment)
 
   let raw_file =
     assembled_lines |> list.map(fn(x) { x <> "\n" }) |> string.join("")
