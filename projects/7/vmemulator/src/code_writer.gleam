@@ -13,7 +13,8 @@ pub fn generate_first_lines() -> List(String) {
   [
     "@256", "D=A", "@SP", "M=D", "@1", "D=A", "@LCL", "M=D", "@2", "D=A", "@ARG",
     "M=D", "@3", "D=A", "@THIS", "M=D", "@4", "D=A", "@THAT", "M=D", "@5", "D=A",
-    "@TEMP", "M=D",
+    "@TEMP", "M=D", "@13", "D=A", "@R13", "M=D", "@14", "D=A", "@R14", "M=D",
+    "@15", "D=A", "@R15", "M=D",
   ]
 }
 
@@ -147,11 +148,11 @@ pub fn write_push_pop(command_type: CommandType) -> List(String) {
 fn generate_by_segment(segment: Segment, index: Int) -> #(List(String), String) {
   case segment {
     Constant -> #(["@" <> int.to_string(index), "D=A"], int.to_string(index))
-    Local -> #(["LCL", "D=M"], "LCL")
-    Argument -> #(["ARG", "D=M"], "ARG")
-    This -> #(["THIS", "D=M"], "THIS")
-    That -> #(["THAT", "D=M"], "THAT")
-    Temp -> #(["TEMP", "D=M"], "TEMP")
+    Local -> #(["@LCL", "D=M"], "LCL")
+    Argument -> #(["@ARG", "D=M"], "ARG")
+    This -> #(["@THIS", "D=M"], "THIS")
+    That -> #(["@THAT", "D=M"], "THAT")
+    Temp -> #(["@TEMP", "D=M"], "TEMP")
     _ -> panic
   }
 }
