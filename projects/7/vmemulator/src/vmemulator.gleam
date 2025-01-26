@@ -22,19 +22,22 @@ pub fn main() {
 
   let segment_store = segment_store.init()
 
-  let #(assembled_lines, final_state) =
+  let #(assembled_lines, final_state, _) =
     parsed
     |> list.fold(
-      #(code_writer.generate_first_lines(segment_store), segment_store),
+      #(code_writer.generate_first_lines(segment_store), segment_store, 0),
       fn(acc, command_type) {
-        let #(assembled, state) = acc
+        let #(assembled_list, segment_store, label_counter) = acc
         case command_type {
           parser.CArithmetic(_) -> {
             // TODO なんらかの segment の操作？
+            let #(assembled, updated_counter) =
+              code_writer.write_arithmetic(command_type, label_counter)
             #(
-              assembled
-                |> list.append(code_writer.write_arithmetic(command_type)),
+              assembled_list
+                |> list.append(assembled),
               segment_store,
+              updated_counter,
             )
           }
           parser.CPush(segment, value) -> {
@@ -44,8 +47,10 @@ pub fn main() {
             }
 
             #(
-              assembled |> list.append(code_writer.write_push_pop(command_type)),
+              assembled_list
+                |> list.append(code_writer.write_push_pop(command_type)),
               new_segment,
+              label_counter,
             )
           }
           parser.CPop(segment, value) -> {
@@ -56,8 +61,10 @@ pub fn main() {
             }
 
             #(
-              assembled |> list.append(code_writer.write_push_pop(command_type)),
+              assembled_list
+                |> list.append(code_writer.write_push_pop(command_type)),
               new_segment,
+              label_counter,
             )
           }
         }

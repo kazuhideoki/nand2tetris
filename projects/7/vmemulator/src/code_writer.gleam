@@ -1,8 +1,8 @@
 //// このモジュールは、P a r s e r によって解析されたVMコードをH a c k アセンブリ コードへと変換する
-//// ここでは state の変更は行わない
 
 import gleam/int
 import gleam/io
+import gleam/list
 import gleam/option.{None, Some}
 import parser.{type CommandType, CArithmetic, CPop, CPush, Constant}
 import segment_store.{type SegmentStore}
@@ -11,6 +11,7 @@ pub fn generate_first_lines(segment_store: SegmentStore) -> List(String) {
   let option_sp = segment_store.get(segment_store, "SP")
   case option_sp {
     Some(sp) -> {
+      // SP の初期化
       ["@" <> int.to_string(sp), "D=A", "@SP", "M=D"]
     }
     None -> panic
@@ -22,25 +23,96 @@ pub fn generate_last_lines() {
 }
 
 /// 算術論理コマンドの command に対応するアセンブリコードを出力ファイルに書き込む。
-pub fn write_arithmetic(command_type: CommandType) -> List(String) {
+/// 一意なラベルを生成するために、label_counter を引数に取る。
+pub fn write_arithmetic(
+  command_type: CommandType,
+  label_counter: Int,
+) -> #(List(String), Int) {
   case command_type {
     CArithmetic(value) ->
       case value {
         // ポインタ取得 -> スタック最上段の値取得 -> Dに格納 -> スタックのもう一段下の値取得 -> Dを加算して同じ位置に格納
-        "add" -> ["@SP", "AM=M-1", "D=M", "A=A-1", "M=M+D"]
-        "sub" -> ["@SP", "AM=M-1", "D=M", "A=A-1", "M=M-D"]
+        "add" -> #(
+          ["@SP", "AM=M-1", "D=M", "A=A-1", "M=M+D"],
+          label_counter + 1,
+        )
+        "sub" -> #(
+          ["@SP", "AM=M-1", "D=M", "A=A-1", "M=M-D"],
+          label_counter + 1,
+        )
+        // 条件分岐ができるのは jump だけ。これを利用する
         "eq" -> {
-          // 片方not -> & -> 0かどうか?(0なら1, 違うなら0)
-          todo
+          let eq_true_label = "EQ_TRUE_" <> int.to_string(label_counter)
+          let eq_end_label = "EQ_END_" <> int.to_string(label_counter)
+          // 差を計算する
+          #(
+            ["@SP", "AM=M-1", "D=M", "A=A-1", "D=M-D"]
+              // 0 なら true(-1), それ以外なら false(0)
+              |> list.append([
+                "@" <> eq_true_label,
+                "D;JEQ",
+                "@SP",
+                "A=M-1",
+                "M=0",
+                "@" <> eq_end_label,
+                "0;JMP",
+                "(" <> eq_true_label <> ")",
+                "@SP",
+                "A=M-1",
+                "M=-1",
+                "(" <> eq_end_label <> ")",
+              ]),
+            label_counter + 1,
+          )
         }
         "lt" -> {
-          todo
+          let lt_true_label = "LT_TRUE_" <> int.to_string(label_counter)
+          let lt_end_label = "LT_END_" <> int.to_string(label_counter)
+          #(
+            ["@SP", "AM=M-1", "D=M", "A=A-1", "D=M-D"]
+              |> list.append([
+                "@" <> lt_true_label,
+                "D;JLT",
+                "@SP",
+                "A=M-1",
+                "M=0",
+                "@" <> lt_end_label,
+                "0;JMP",
+                "(" <> lt_true_label <> ")",
+                "@SP",
+                "A=M-1",
+                "M=-1",
+                "(" <> lt_end_label <> ")",
+              ]),
+            label_counter + 1,
+          )
         }
-        "gt" -> todo
-        "neg" -> ["@SP", "AM=M-1", "M=-M"]
-        "and" -> ["@SP", "AM=M-1", "D=M", "A=A-1", "M=M&D"]
-        "or" -> ["@SP", "AM=M-1", "D=M", "A=A-1", "M=M|D"]
-        "not" -> ["@SP", "AM=M-1", "D=M", "A=A-1", "M=!M"]
+        "gt" -> {
+          let gt_true_label = "GT_TRUE_" <> int.to_string(label_counter)
+          let gt_end_label = "GT_END_" <> int.to_string(label_counter)
+          #(
+            ["@SP", "AM=M-1", "D=M", "A=A-1", "D=M-D"]
+              |> list.append([
+                "@" <> gt_true_label,
+                "D;JGT",
+                "@SP",
+                "A=M-1",
+                "M=0",
+                "@" <> gt_end_label,
+                "0;JMP",
+                "(" <> gt_true_label <> ")",
+                "@SP",
+                "A=M-1",
+                "M=-1",
+                "(" <> gt_end_label <> ")",
+              ]),
+            label_counter + 1,
+          )
+        }
+        "neg" -> #(["@SP", "AM=M-1", "M=-M"], label_counter)
+        "and" -> #(["@SP", "AM=M-1", "D=M", "A=A-1", "M=M&D"], label_counter)
+        "or" -> #(["@SP", "AM=M-1", "D=M", "A=A-1", "M=M|D"], label_counter)
+        "not" -> #(["@SP", "AM=M-1", "M=!M"], label_counter)
         _ -> panic
       }
     _ -> panic
