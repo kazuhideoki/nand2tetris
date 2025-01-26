@@ -1,12 +1,13 @@
 //// このモジュールは、P a r s e r によって解析されたVMコードをH a c k アセンブリ コードへと変換する
 
+import argv
 import gleam/int
 import gleam/io
 import gleam/list
 
 import parser.{
   type CommandType, type Segment, Argument, CArithmetic, CPop, CPush, Constant,
-  Local, Pointer, Temp, That, This,
+  Local, Pointer, Static, Temp, That, This,
 }
 
 pub fn generate_first_lines() -> List(String) {
@@ -148,6 +149,14 @@ pub fn write_push_pop(command_type: CommandType) -> List(String) {
             _ -> panic
           }
         }
+        Static -> {
+          let file_name = case list.first(argv.load().arguments) {
+            Ok(file_name) -> file_name
+            Error(_) -> panic
+          }
+          let file_name = file_name <> int.to_string(index)
+          ["@" <> file_name, "D=M"]
+        }
         _ -> panic
       }
       segment_code
@@ -242,6 +251,14 @@ pub fn write_push_pop(command_type: CommandType) -> List(String) {
             1 -> ["@SP", "AM=M-1", "D=M", "@4", "M=D"]
             _ -> panic
           }
+        Static -> {
+          let file_name = case list.first(argv.load().arguments) {
+            Ok(file_name) -> file_name
+            Error(_) -> panic
+          }
+          let file_name = file_name <> int.to_string(index)
+          ["@SP", "AM=M-1", "D=M", "@" <> file_name, "M=D"]
+        }
         _ -> panic
       }
     }
