@@ -3,19 +3,18 @@
 import gleam/int
 import gleam/io
 import gleam/list
-import gleam/option.{None, Some}
-import parser.{type CommandType, CArithmetic, CPop, CPush, Constant}
-import segment_store.{type SegmentStore}
 
-pub fn generate_first_lines(segment_store: SegmentStore) -> List(String) {
-  let option_sp = segment_store.get(segment_store, "SP")
-  case option_sp {
-    Some(sp) -> {
-      // SP の初期化
-      ["@" <> int.to_string(sp), "D=A", "@SP", "M=D"]
-    }
-    None -> panic
-  }
+import parser.{
+  type CommandType, type Segment, Argument, CArithmetic, CPop, CPush, Constant,
+  Local, Temp, That, This,
+}
+
+pub fn generate_first_lines() -> List(String) {
+  [
+    "@256", "D=A", "@SP", "M=D", "@1", "D=A", "@LCL", "M=D", "@2", "D=A", "@ARG",
+    "M=D", "@3", "D=A", "@THIS", "M=D", "@4", "D=A", "@THAT", "M=D", "@5", "D=A",
+    "@TEMP", "M=D",
+  ]
 }
 
 pub fn generate_last_lines() {
@@ -121,30 +120,21 @@ pub fn write_arithmetic(
 }
 
 /// pushまたはpopの command に対応するアセンブリコードを出力ファイルに書き込む。
-pub fn write_push_pop(
-  command_type: CommandType,
-  segment_store: SegmentStore,
-) -> List(String) {
+pub fn write_push_pop(command_type: CommandType) -> List(String) {
   case command_type {
     CPush(segment, index) -> {
-      let segment_code = generate_by_segment(segment, index, segment_store)
-      case segment {
-        Constant ->
-          segment_code
-          |> list.append(["@SP", "A=M", "M=D", "@SP", "M=M+1"])
-        _ -> panic
-        // 必要な実装を追加
-      }
+      let #(segment_code, _) = generate_by_segment(segment, index)
+      segment_code
+      // SP のインクリメント
+      |> list.append(["@SP", "A=M", "M=D", "@SP", "M=M+1"])
     }
     CPop(segment, index) -> {
-      let segment_code = generate_by_segment(segment, index, segment_store)
-      // 🔶 TODO 不完全なので修正
-      case segment {
-        Constant ->
-          segment_code |> list.append(["@SP", "A=M", "M=D", "@SP", "M=M-1"])
-        _ -> panic
-        // 必要な実装を追加
-      }
+      let #(segment_code, simbol) = generate_by_segment(segment, index)
+      segment_code
+      // セグメントに値を格納
+      |> list.append(["@" <> simbol, "M=D"])
+      // SP のデクリメント
+      |> list.append(["@SP", "A=M", "M=D", "@SP", "M=M-1"])
     }
     _ -> {
       io.println_error("not implemented")
@@ -153,15 +143,15 @@ pub fn write_push_pop(
   }
 }
 
-/// 🔶 TODO constant 意外にも対応する
-/// constant(現状)に加え、local, argument, this, that, temp
-fn generate_by_segment(
-  segment: parser.Segment,
-  index: Int,
-  segment_store: SegmentStore,
-) -> List(String) {
+/// セグメントの値を取得するアセンブリ + セグメントのシンボルを返す
+fn generate_by_segment(segment: Segment, index: Int) -> #(List(String), String) {
   case segment {
-    Constant -> ["@" <> int.to_string(index), "D=A"]
+    Constant -> #(["@" <> int.to_string(index), "D=A"], int.to_string(index))
+    Local -> #(["LCL", "D=M"], "LCL")
+    Argument -> #(["ARG", "D=M"], "ARG")
+    This -> #(["THIS", "D=M"], "THIS")
+    That -> #(["THAT", "D=M"], "THAT")
+    Temp -> #(["TEMP", "D=M"], "TEMP")
     _ -> panic
   }
 }

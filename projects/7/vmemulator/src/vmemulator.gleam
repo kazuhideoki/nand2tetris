@@ -5,7 +5,6 @@ import gleam/list
 import gleam/result
 import gleam/string
 import parser
-import segment_store
 import simplifile
 
 pub fn main() {
@@ -19,14 +18,12 @@ pub fn main() {
     }),
   )
 
-  let segment_store = segment_store.init()
-
-  let #(assembled_lines, final_segment, _) =
+  let #(assembled_lines, _) =
     parsed
     |> list.fold(
-      #(code_writer.generate_first_lines(segment_store), segment_store, 0),
+      #(code_writer.generate_first_lines(), 0),
       fn(acc, command_type) {
-        let #(assembled_list, segment_store, label_counter) = acc
+        let #(assembled_list, label_counter) = acc
         case command_type {
           parser.CArithmetic(_) -> {
             // TODO なんらかの segment の操作？
@@ -35,18 +32,13 @@ pub fn main() {
             #(
               assembled_list
                 |> list.append(assembled),
-              segment_store,
               updated_counter,
             )
           }
           parser.CPush(segment, value) | parser.CPop(segment, value) -> {
             #(
               assembled_list
-                |> list.append(code_writer.write_push_pop(
-                  command_type,
-                  segment_store,
-                )),
-              segment_store,
+                |> list.append(code_writer.write_push_pop(command_type)),
               label_counter,
             )
           }
@@ -58,8 +50,6 @@ pub fn main() {
 
   io.debug("⭐️")
   io.debug(assembled_lines)
-  io.debug("🟠")
-  io.debug(final_segment)
 
   let raw_file =
     assembled_lines |> list.map(fn(x) { x <> "\n" }) |> string.join("")
