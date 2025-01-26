@@ -6,7 +6,7 @@ import gleam/list
 
 import parser.{
   type CommandType, type Segment, Argument, CArithmetic, CPop, CPush, Constant,
-  Local, Temp, That, This,
+  Local, Pointer, Temp, That, This,
 }
 
 pub fn generate_first_lines() -> List(String) {
@@ -124,35 +124,130 @@ pub fn write_arithmetic(
 pub fn write_push_pop(command_type: CommandType) -> List(String) {
   case command_type {
     CPush(segment, index) -> {
-      let #(segment_code, _) = generate_by_segment(segment, index)
+      let segment_code = case segment {
+        Constant -> ["@" <> int.to_string(index), "D=A"]
+        Local -> [
+          "@LCL",
+          "D=M",
+          // D = RAM[LCL] (localセグメントのベースアドレス)
+          "@" <> int.to_string(index),
+          // A = LCL + index
+          "A=D+A",
+          // D = RAM[LCL + index] そこに入っている値
+          "D=M",
+        ]
+        Argument -> ["@ARG", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
+        This -> ["@THIS", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
+        That -> ["@THAT", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
+        Temp -> ["@TEMP", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
+        Pointer -> {
+          // 現在の値を stack に push する
+          case index {
+            0 -> ["@THIS", "D=M"]
+            1 -> ["@THAT", "D=M"]
+            _ -> panic
+          }
+        }
+        _ -> panic
+      }
       segment_code
       // SP のインクリメント
       |> list.append(["@SP", "A=M", "M=D", "@SP", "M=M+1"])
     }
     CPop(segment, index) -> {
-      let #(segment_code, simbol) = generate_by_segment(segment, index)
-      segment_code
-      // セグメントに値を格納
-      |> list.append(["@" <> simbol, "M=D"])
-      // SP のデクリメント
-      |> list.append(["@SP", "A=M", "M=D", "@SP", "M=M-1"])
+      case segment {
+        Local -> [
+          "@LCL",
+          "D=M",
+          "@" <> int.to_string(index),
+          "D=D+A",
+          "@13",
+          "M=D",
+          // ↓ 最後にスタックトップを D に取り出して RAM[R13] に書き込む
+          "@SP",
+          "AM=M-1",
+          "D=M",
+          "@13",
+          "A=M",
+          "M=D",
+        ]
+        Argument -> [
+          "@ARG",
+          "D=M",
+          "@" <> int.to_string(index),
+          "D=D+A",
+          "@13",
+          "M=D",
+          "@SP",
+          "AM=M-1",
+          "D=M",
+          "@13",
+          "A=M",
+          "M=D",
+        ]
+        This -> [
+          "@THIS",
+          "D=M",
+          "@" <> int.to_string(index),
+          "D=D+A",
+          "@13",
+          "M=D",
+          "@SP",
+          "AM=M-1",
+          "D=M",
+          "@13",
+          "A=M",
+          "M=D",
+        ]
+        That -> [
+          "@THAT",
+          "D=M",
+          "@" <> int.to_string(index),
+          "D=D+A",
+          "@13",
+          "M=D",
+          "@SP",
+          "AM=M-1",
+          "D=M",
+          "@13",
+          "A=M",
+          "M=D",
+        ]
+        Temp -> [
+          "@TEMP",
+          "D=M",
+          "@" <> int.to_string(index),
+          "D=D+A",
+          "@13",
+          "M=D",
+          "@SP",
+          "AM=M-1",
+          "D=M",
+          "@13",
+          "A=M",
+          "M=D",
+        ]
+        Pointer ->
+          case index {
+            // pointer 0 = THIS -> RAM[3] へ pop
+            0 -> [
+              "@SP", "AM=M-1",
+              // SP--
+              "D=M",
+              // D = *(SP)
+              "@3", "M=D",
+              // RAM[3] = D
+            ]
+            // pointer 1 = THAT -> RAM[4] へ pop
+            1 -> ["@SP", "AM=M-1", "D=M", "@4", "M=D"]
+            _ -> panic
+          }
+        _ -> panic
+      }
     }
     _ -> {
       io.println_error("not implemented")
       panic
     }
-  }
-}
-
-/// セグメントの値を取得するアセンブリ + セグメントのシンボルを返す
-fn generate_by_segment(segment: Segment, index: Int) -> #(List(String), String) {
-  case segment {
-    Constant -> #(["@" <> int.to_string(index), "D=A"], int.to_string(index))
-    Local -> #(["@LCL", "D=M"], "LCL")
-    Argument -> #(["@ARG", "D=M"], "ARG")
-    This -> #(["@THIS", "D=M"], "THIS")
-    That -> #(["@THAT", "D=M"], "THAT")
-    Temp -> #(["@TEMP", "D=M"], "TEMP")
-    _ -> panic
   }
 }
