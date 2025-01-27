@@ -4,6 +4,8 @@ import argv
 import gleam/int
 import gleam/io
 import gleam/list
+import gleam/result
+import gleam/string
 
 import parser.{
   type CommandType, type Segment, Argument, CArithmetic, CPop, CPush, Constant,
@@ -151,11 +153,16 @@ pub fn write_push_pop(command_type: CommandType) -> List(String) {
         }
         Static -> {
           let file_name = case list.first(argv.load().arguments) {
-            Ok(file_name) -> file_name
+            Ok(file_name) ->
+              string.split(file_name, "/")
+              |> list.last
+              |> result.map(fn(l) { string.replace(l, ".vm", "") })
             Error(_) -> panic
           }
-          let file_name = file_name <> int.to_string(index)
-          ["@" <> file_name, "D=M"]
+          case file_name {
+            Ok(file_name) -> ["@" <> file_name <> int.to_string(index), "D=M"]
+            Error(_) -> panic
+          }
         }
         _ -> panic
       }
@@ -163,6 +170,7 @@ pub fn write_push_pop(command_type: CommandType) -> List(String) {
       // SP のインクリメント
       |> list.append(["@SP", "A=M", "M=D", "@SP", "M=M+1"])
     }
+    // SP のデクリメントは個別で行う。
     CPop(segment, index) -> {
       case segment {
         Local -> [
@@ -253,11 +261,20 @@ pub fn write_push_pop(command_type: CommandType) -> List(String) {
           }
         Static -> {
           let file_name = case list.first(argv.load().arguments) {
-            Ok(file_name) -> file_name
+            Ok(file_name) ->
+              string.split(file_name, "/")
+              |> list.last
+              |> result.map(fn(l) { string.replace(l, ".vm", "") })
             Error(_) -> panic
           }
-          let file_name = file_name <> int.to_string(index)
-          ["@SP", "AM=M-1", "D=M", "@" <> file_name, "M=D"]
+          io.debug(file_name)
+          case file_name {
+            Ok(file_name) -> {
+              let file_name = file_name <> int.to_string(index)
+              ["@SP", "AM=M-1", "D=M", "@" <> file_name, "M=D"]
+            }
+            Error(_) -> panic
+          }
         }
         _ -> panic
       }
