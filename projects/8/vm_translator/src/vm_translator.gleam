@@ -25,22 +25,24 @@ pub fn main() {
       fn(acc, command_type) {
         let #(assembled_list, label_counter) = acc
         case command_type {
-          parser.CArithmetic(_) -> {
-            // TODO なんらかの segment の操作？
+          parser.CArithmetic(command) -> {
             let #(assembled, updated_counter) =
-              code_writer.write_arithmetic(command_type, label_counter)
+              code_writer.write_arithmetic(command, label_counter)
             #(
               assembled_list
                 |> list.append(assembled),
               updated_counter,
             )
           }
-          parser.CPush(segment, value) | parser.CPop(segment, value) -> {
+          parser.CPush(_, _) | parser.CPop(_, _) -> {
             #(
               assembled_list
                 |> list.append(code_writer.write_push_pop(command_type)),
               label_counter,
             )
+          }
+          parser.CLabel(_) -> {
+            todo
           }
         }
       },

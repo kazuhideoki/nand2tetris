@@ -12,6 +12,7 @@ pub type CommandType {
   CPush(Segment, Int)
   // pop segment index
   CPop(Segment, Int)
+  CLabel(String)
 }
 
 pub type Segment {
