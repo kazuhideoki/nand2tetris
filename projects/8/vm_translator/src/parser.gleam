@@ -13,6 +13,7 @@ pub type CommandType {
   // pop segment index
   CPop(Segment, Int)
   CLabel(String)
+  CIfGoto(String)
 }
 
 pub type Segment {

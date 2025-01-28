@@ -51,6 +51,9 @@ pub fn main() {
           parser.CLabel(_) -> {
             todo
           }
+          parser.CIfGoto(_) -> {
+            todo
+          }
         }
       },
     )
