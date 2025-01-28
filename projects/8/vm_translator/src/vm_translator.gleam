@@ -34,10 +34,17 @@ pub fn main() {
               updated_counter,
             )
           }
-          parser.CPush(_, _) | parser.CPop(_, _) -> {
+          parser.CPush(segment, index) -> {
             #(
               assembled_list
-                |> list.append(code_writer.write_push_pop(command_type)),
+                |> list.append(code_writer.write_push(segment, index)),
+              label_counter,
+            )
+          }
+          parser.CPop(segment, index) -> {
+            #(
+              assembled_list
+                |> list.append(code_writer.write_pop(segment, index)),
               label_counter,
             )
           }

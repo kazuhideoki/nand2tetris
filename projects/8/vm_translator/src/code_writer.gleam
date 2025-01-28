@@ -113,166 +113,160 @@ pub fn write_arithmetic(
   }
 }
 
-/// pushまたはpopの command に対応するアセンブリコードを出力ファイルに書き込む。
-pub fn write_push_pop(command_type: CommandType) -> List(String) {
-  case command_type {
-    CPush(segment, index) -> {
-      let segment_code = case segment {
-        Constant -> ["@" <> int.to_string(index), "D=A"]
-        Local -> [
-          "@LCL",
-          "D=M",
-          // D = RAM[LCL] (localセグメントのベースアドレス)
-          "@" <> int.to_string(index),
-          // A = LCL + index
-          "A=D+A",
-          // D = RAM[LCL + index] そこに入っている値
-          "D=M",
-        ]
-        Argument -> ["@ARG", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
-        This -> ["@THIS", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
-        That -> ["@THAT", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
-        Temp -> ["@TEMP", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
-        Pointer -> {
-          // 現在の値を stack に push する
-          case index {
-            0 -> ["@THIS", "D=M"]
-            1 -> ["@THAT", "D=M"]
-            _ -> panic
-          }
-        }
-        Static -> {
-          let file_name = case list.first(argv.load().arguments) {
-            Ok(file_name) ->
-              string.split(file_name, "/")
-              |> list.last
-              |> result.map(fn(l) { string.replace(l, ".vm", "") })
-            Error(_) -> panic
-          }
-          case file_name {
-            Ok(file_name) -> ["@" <> file_name <> int.to_string(index), "D=M"]
-            Error(_) -> panic
-          }
-        }
-        _ -> panic
-      }
-      segment_code
-      // SP のインクリメント
-      |> list.append(["@SP", "A=M", "M=D", "@SP", "M=M+1"])
-    }
-    // SP のデクリメントは個別で行う。
-    CPop(segment, index) -> {
-      case segment {
-        Local -> [
-          "@LCL",
-          "D=M",
-          "@" <> int.to_string(index),
-          "D=D+A",
-          "@13",
-          "M=D",
-          // ↓ 最後にスタックトップを D に取り出して RAM[R13] に書き込む
-          "@SP",
-          "AM=M-1",
-          "D=M",
-          "@13",
-          "A=M",
-          "M=D",
-        ]
-        Argument -> [
-          "@ARG",
-          "D=M",
-          "@" <> int.to_string(index),
-          "D=D+A",
-          "@13",
-          "M=D",
-          "@SP",
-          "AM=M-1",
-          "D=M",
-          "@13",
-          "A=M",
-          "M=D",
-        ]
-        This -> [
-          "@THIS",
-          "D=M",
-          "@" <> int.to_string(index),
-          "D=D+A",
-          "@13",
-          "M=D",
-          "@SP",
-          "AM=M-1",
-          "D=M",
-          "@13",
-          "A=M",
-          "M=D",
-        ]
-        That -> [
-          "@THAT",
-          "D=M",
-          "@" <> int.to_string(index),
-          "D=D+A",
-          "@13",
-          "M=D",
-          "@SP",
-          "AM=M-1",
-          "D=M",
-          "@13",
-          "A=M",
-          "M=D",
-        ]
-        Temp -> [
-          "@TEMP",
-          "D=M",
-          "@" <> int.to_string(index),
-          "D=D+A",
-          "@13",
-          "M=D",
-          "@SP",
-          "AM=M-1",
-          "D=M",
-          "@13",
-          "A=M",
-          "M=D",
-        ]
-        Pointer ->
-          case index {
-            // pointer 0 = THIS -> RAM[3] へ pop
-            0 -> [
-              "@SP", "AM=M-1",
-              // SP--
-              "D=M",
-              // D = *(SP)
-              "@3", "M=D",
-              // RAM[3] = D
-            ]
-            // pointer 1 = THAT -> RAM[4] へ pop
-            1 -> ["@SP", "AM=M-1", "D=M", "@4", "M=D"]
-            _ -> panic
-          }
-        Static -> {
-          let file_name = case list.first(argv.load().arguments) {
-            Ok(file_name) ->
-              string.split(file_name, "/")
-              |> list.last
-              |> result.map(fn(l) { string.replace(l, ".vm", "") })
-            Error(_) -> panic
-          }
-          io.debug(file_name)
-          case file_name {
-            Ok(file_name) -> {
-              let file_name = file_name <> int.to_string(index)
-              ["@SP", "AM=M-1", "D=M", "@" <> file_name, "M=D"]
-            }
-            Error(_) -> panic
-          }
-        }
+/// push の command に対応するアセンブリコードを出力ファイルに書き込む。
+pub fn write_push(segment: Segment, index: Int) -> List(String) {
+  let segment_code = case segment {
+    Constant -> ["@" <> int.to_string(index), "D=A"]
+    Local -> [
+      "@LCL",
+      "D=M",
+      // D = RAM[LCL] (localセグメントのベースアドレス)
+      "@" <> int.to_string(index),
+      // A = LCL + index
+      "A=D+A",
+      // D = RAM[LCL + index] そこに入っている値
+      "D=M",
+    ]
+    Argument -> ["@ARG", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
+    This -> ["@THIS", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
+    That -> ["@THAT", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
+    Temp -> ["@TEMP", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
+    Pointer -> {
+      // 現在の値を stack に push する
+      case index {
+        0 -> ["@THIS", "D=M"]
+        1 -> ["@THAT", "D=M"]
         _ -> panic
       }
     }
-    _ -> {
-      io.println_error("not implemented")
-      panic
+    Static -> {
+      let file_name = case list.first(argv.load().arguments) {
+        Ok(file_name) ->
+          string.split(file_name, "/")
+          |> list.last
+          |> result.map(fn(l) { string.replace(l, ".vm", "") })
+        Error(_) -> panic
+      }
+      case file_name {
+        Ok(file_name) -> ["@" <> file_name <> int.to_string(index), "D=M"]
+        Error(_) -> panic
+      }
     }
+    _ -> panic
+  }
+  segment_code
+  // SP のインクリメント
+  |> list.append(["@SP", "A=M", "M=D", "@SP", "M=M+1"])
+}
+
+/// pop の command に対応するアセンブリコードを出力ファイルに書き込む。
+pub fn write_pop(segment: Segment, index: Int) -> List(String) {
+  // SP のデクリメントは個別で行う。
+  case segment {
+    Local -> [
+      "@LCL",
+      "D=M",
+      "@" <> int.to_string(index),
+      "D=D+A",
+      "@13",
+      "M=D",
+      // ↓ 最後にスタックトップを D に取り出して RAM[R13] に書き込む
+      "@SP",
+      "AM=M-1",
+      "D=M",
+      "@13",
+      "A=M",
+      "M=D",
+    ]
+    Argument -> [
+      "@ARG",
+      "D=M",
+      "@" <> int.to_string(index),
+      "D=D+A",
+      "@13",
+      "M=D",
+      "@SP",
+      "AM=M-1",
+      "D=M",
+      "@13",
+      "A=M",
+      "M=D",
+    ]
+    This -> [
+      "@THIS",
+      "D=M",
+      "@" <> int.to_string(index),
+      "D=D+A",
+      "@13",
+      "M=D",
+      "@SP",
+      "AM=M-1",
+      "D=M",
+      "@13",
+      "A=M",
+      "M=D",
+    ]
+    That -> [
+      "@THAT",
+      "D=M",
+      "@" <> int.to_string(index),
+      "D=D+A",
+      "@13",
+      "M=D",
+      "@SP",
+      "AM=M-1",
+      "D=M",
+      "@13",
+      "A=M",
+      "M=D",
+    ]
+    Temp -> [
+      "@TEMP",
+      "D=M",
+      "@" <> int.to_string(index),
+      "D=D+A",
+      "@13",
+      "M=D",
+      "@SP",
+      "AM=M-1",
+      "D=M",
+      "@13",
+      "A=M",
+      "M=D",
+    ]
+    Pointer ->
+      case index {
+        // pointer 0 = THIS -> RAM[3] へ pop
+        0 -> [
+          "@SP", "AM=M-1",
+          // SP--
+          "D=M",
+          // D = *(SP)
+          "@3", "M=D",
+          // RAM[3] = D
+        ]
+        // pointer 1 = THAT -> RAM[4] へ pop
+        1 -> ["@SP", "AM=M-1", "D=M", "@4", "M=D"]
+        _ -> panic
+      }
+    Static -> {
+      let file_name = case list.first(argv.load().arguments) {
+        Ok(file_name) ->
+          string.split(file_name, "/")
+          |> list.last
+          |> result.map(fn(l) { string.replace(l, ".vm", "") })
+        Error(_) -> panic
+      }
+      io.debug(file_name)
+      case file_name {
+        Ok(file_name) -> {
+          let file_name = file_name <> int.to_string(index)
+          ["@SP", "AM=M-1", "D=M", "@" <> file_name, "M=D"]
+        }
+        Error(_) -> panic
+      }
+    }
+    _ -> panic
   }
 }
 
