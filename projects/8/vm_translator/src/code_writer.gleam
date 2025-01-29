@@ -2,7 +2,6 @@
 
 import argv
 import gleam/int
-import gleam/io
 import gleam/list
 import gleam/result
 import gleam/string
@@ -12,12 +11,7 @@ import parser.{
 }
 
 pub fn generate_first_lines() -> List(String) {
-  [
-    "@256", "D=A", "@SP", "M=D", "@1", "D=A", "@LCL", "M=D", "@2", "D=A", "@ARG",
-    "M=D", "@3", "D=A", "@THIS", "M=D", "@4", "D=A", "@THAT", "M=D", "@5", "D=A",
-    "@TEMP", "M=D", "@13", "D=A", "@R13", "M=D", "@14", "D=A", "@R14", "M=D",
-    "@15", "D=A", "@R15", "M=D",
-  ]
+  ["@256", "D=A", "@SP", "M=D"]
 }
 
 pub fn generate_last_lines() {
