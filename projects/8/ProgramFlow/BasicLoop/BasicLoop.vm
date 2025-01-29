@@ -4,13 +4,13 @@
 // File name: projects/8/ProgramFlow/BasicLoop/BasicLoop.vm
 
 // Computes the sum 1 + 2 + ... + n and pushes the result onto
-// the stack. The value n is given in argument[0], which must be 
+// the stack. The value n is given in argument[0], which must be
 // initialized by the caller of this code.
 
-	push constant 0    
+	push constant 0
 	pop local 0         // sum = 0
 label LOOP
-	push argument 0     
+	push argument 0
 	push local 0
 	add
 	pop local 0	        // sum = sum + n
