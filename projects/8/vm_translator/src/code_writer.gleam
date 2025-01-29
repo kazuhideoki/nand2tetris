@@ -2,6 +2,7 @@
 
 import argv
 import gleam/int
+import gleam/io
 import gleam/list
 import gleam/result
 import gleam/string
@@ -127,7 +128,7 @@ pub fn write_push(segment: Segment, index: Int) -> List(String) {
     Argument -> ["@ARG", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
     This -> ["@THIS", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
     That -> ["@THAT", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
-    Temp -> ["@" <> int.to_string(index), "D=M"]
+    Temp -> ["@" <> int.to_string(5 + index), "D=M"]
     Pointer -> {
       // 現在の値を stack に push する
       case index {
@@ -217,7 +218,7 @@ pub fn write_pop(segment: Segment, index: Int) -> List(String) {
       "M=D",
     ]
     Temp -> [
-      "@" <> int.to_string(index),
+      "@" <> int.to_string(5 + index),
       "D=A",
       "@13",
       "M=D",
@@ -264,6 +265,7 @@ pub fn write_pop(segment: Segment, index: Int) -> List(String) {
 }
 
 pub fn write_label(label: String) -> List(String) {
+  io.debug(label)
   ["(" <> label <> ")"]
 }
 

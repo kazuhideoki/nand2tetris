@@ -45,9 +45,19 @@ pub fn parse_lines(raw_string: String) -> List(String) {
   |> list.filter(fn(row) { string.starts_with(row, "//") == False })
   // `//` を分離して、後ろを削除する
   |> list.map(fn(row) {
+    io.debug("🟡")
+    io.debug(row)
     case string.split(row, "//") {
-      [head, _] -> head |> string.trim
-      [head] -> head |> string.trim
+      [head, _] -> {
+        let r = head |> string.trim
+        io.debug(r)
+        r
+      }
+      [head] -> {
+        let r = head |> string.trim
+        io.debug(r)
+        r
+      }
       _ -> panic
     }
   })
@@ -55,10 +65,9 @@ pub fn parse_lines(raw_string: String) -> List(String) {
 
 pub fn parse_line(str: String) -> CommandType {
   case str {
-    "push" <> segment_and_index -> {
+    "push " <> segment_and_index -> {
       let parts =
         segment_and_index
-        |> string.trim
         |> string.split(" ")
       case parts {
         [segment, index_str] -> {
@@ -77,10 +86,9 @@ pub fn parse_line(str: String) -> CommandType {
         _ -> panic
       }
     }
-    "pop" <> segment_and_index -> {
+    "pop " <> segment_and_index -> {
       let parts =
         segment_and_index
-        |> string.trim
         |> string.split(" ")
       case parts {
         [segment, index_str] -> {
@@ -110,8 +118,8 @@ pub fn parse_line(str: String) -> CommandType {
       || str == "or"
       || str == "not"
     -> CArithmetic(str)
-    "label" <> label -> CLabel(label)
-    "if-goto" <> label -> CIfGoto(label)
+    "labe " <> label -> CLabel(label)
+    "if-goto " <> label -> CIfGoto(label)
     _ -> panic
   }
 }
