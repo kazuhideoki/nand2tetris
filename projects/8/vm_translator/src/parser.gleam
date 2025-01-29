@@ -1,6 +1,7 @@
 //// このモジュールは、1つの . vmファイルの解析を行う。P a r s e r は、VMコードを 読み取り、コマンドをいくつかの構成要素に分解し、その構成要素にアクセスする ためのサービスを提供する。
 
 import gleam/int
+import gleam/io
 import gleam/list
 import gleam/result
 import gleam/string
@@ -42,15 +43,26 @@ pub fn parse_lines(raw_string: String) -> List(String) {
   |> list.map(fn(row) { string.trim(row) })
   |> list.filter(fn(row) { row != "" })
   |> list.filter(fn(row) { string.starts_with(row, "//") == False })
+  // `//` を分離して、後ろを削除する
+  |> list.map(fn(row) {
+    case string.split(row, "//") {
+      [head, _] -> head |> string.trim
+      [head] -> head |> string.trim
+      _ -> panic
+    }
+  })
 }
 
 pub fn parse_line(str: String) -> CommandType {
+  io.debug(str)
   case str {
     "push" <> segment_and_index -> {
+      io.debug(segment_and_index)
       let parts =
         segment_and_index
         |> string.trim
         |> string.split(" ")
+      io.debug(parts)
       case parts {
         [segment, index_str] -> {
           case segment, int.parse(index_str) {
@@ -101,6 +113,8 @@ pub fn parse_line(str: String) -> CommandType {
       || str == "or"
       || str == "not"
     -> CArithmetic(str)
+    "label" <> label -> CLabel(label)
+    "if-goto" <> label -> CIfGoto(label)
     _ -> panic
   }
 }

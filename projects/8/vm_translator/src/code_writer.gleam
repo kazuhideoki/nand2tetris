@@ -8,8 +8,7 @@ import gleam/result
 import gleam/string
 
 import parser.{
-  type CommandType, type Segment, Argument, CArithmetic, CPop, CPush, Constant,
-  Local, Pointer, Static, Temp, That, This,
+  type Segment, Argument, Constant, Local, Pointer, Static, Temp, That, This,
 }
 
 pub fn generate_first_lines() -> List(String) {
@@ -152,7 +151,6 @@ pub fn write_push(segment: Segment, index: Int) -> List(String) {
         Error(_) -> panic
       }
     }
-    _ -> panic
   }
   segment_code
   // SP のインクリメント
@@ -257,7 +255,6 @@ pub fn write_pop(segment: Segment, index: Int) -> List(String) {
           |> result.map(fn(l) { string.replace(l, ".vm", "") })
         Error(_) -> panic
       }
-      io.debug(file_name)
       case file_name {
         Ok(file_name) -> {
           let file_name = file_name <> int.to_string(index)
@@ -271,9 +268,16 @@ pub fn write_pop(segment: Segment, index: Int) -> List(String) {
 }
 
 pub fn write_label(label: String) -> List(String) {
-  todo
+  ["(" <> label <> ")"]
 }
 
 pub fn write_goto(label: String) -> List(String) {
-  todo
+  ["@" <> label, "0;JMP"]
+}
+
+/// 条件付き goto
+pub fn write_if(label: String) -> List(String) {
+  // pop する
+  // false(0) でなければ label の位置から実行を継続 (0 以外なら true)
+  ["@SP", "AM=M-1", "D=M", "@" <> label, "D;JNE"]
 }

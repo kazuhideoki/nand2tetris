@@ -48,11 +48,19 @@ pub fn main() {
               label_counter,
             )
           }
-          parser.CLabel(_) -> {
-            todo
+          parser.CLabel(label) -> {
+            #(
+              assembled_list
+                |> list.append(code_writer.write_label(label)),
+              label_counter,
+            )
           }
-          parser.CIfGoto(_) -> {
-            todo
+          parser.CIfGoto(label) -> {
+            #(
+              assembled_list
+                |> list.append(code_writer.write_if(label)),
+              label_counter,
+            )
           }
         }
       },
