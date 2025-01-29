@@ -11,7 +11,11 @@ import parser.{
 }
 
 pub fn generate_first_lines() -> List(String) {
-  ["@256", "D=A", "@SP", "M=D"]
+  [
+    "@256", "D=A", "@SP", "M=D", "@300", "D=A", "@LCL", "M=D", "@400", "D=A",
+    "@ARG", "M=D", "@3000", "D=A", "@THIS", "M=D", "@3010", "D=A", "@THAT",
+    "M=D",
+  ]
 }
 
 pub fn generate_last_lines() {
@@ -123,7 +127,7 @@ pub fn write_push(segment: Segment, index: Int) -> List(String) {
     Argument -> ["@ARG", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
     This -> ["@THIS", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
     That -> ["@THAT", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
-    Temp -> ["@TEMP", "D=M", "@" <> int.to_string(index), "A=D+A", "D=M"]
+    Temp -> ["@" <> int.to_string(index), "D=M"]
     Pointer -> {
       // 現在の値を stack に push する
       case index {
@@ -213,10 +217,8 @@ pub fn write_pop(segment: Segment, index: Int) -> List(String) {
       "M=D",
     ]
     Temp -> [
-      "@TEMP",
-      "D=M",
       "@" <> int.to_string(index),
-      "D=D+A",
+      "D=A",
       "@13",
       "M=D",
       "@SP",

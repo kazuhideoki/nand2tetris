@@ -54,15 +54,12 @@ pub fn parse_lines(raw_string: String) -> List(String) {
 }
 
 pub fn parse_line(str: String) -> CommandType {
-  io.debug(str)
   case str {
     "push" <> segment_and_index -> {
-      io.debug(segment_and_index)
       let parts =
         segment_and_index
         |> string.trim
         |> string.split(" ")
-      io.debug(parts)
       case parts {
         [segment, index_str] -> {
           case segment, int.parse(index_str) {
