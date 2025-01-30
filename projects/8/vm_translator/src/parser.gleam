@@ -14,6 +14,7 @@ pub type CommandType {
   // pop segment index
   CPop(Segment, Int)
   CLabel(String)
+  CGoto(String)
   CIfGoto(String)
 }
 
@@ -119,6 +120,7 @@ pub fn parse_line(str: String) -> CommandType {
       || str == "not"
     -> CArithmetic(str)
     "label " <> label -> CLabel(label)
+    "goto " <> label -> CGoto(label)
     "if-goto " <> label -> CIfGoto(label)
     _ -> panic
   }

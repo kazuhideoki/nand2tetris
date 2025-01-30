@@ -17,6 +17,7 @@ pub fn generate_first_lines() -> List(String) {
     "@ARG", "M=D", "@3000", "D=A", "@THIS", "M=D", "@3010", "D=A", "@THAT",
     "M=D",
     // "@3", "D=A", "@400", "M=D" // BasicLoop で使う
+    // "@6", "D=A", "@400", "M=D", "@3000", "D=A", "@401", "M=D", // FibonacciSeries で使う argument[0]と[1]に初期値を入れる
   ]
 }
 

@@ -55,6 +55,13 @@ pub fn main() {
               label_counter,
             )
           }
+          parser.CGoto(label) -> {
+            #(
+              assembled_list
+                |> list.append(code_writer.write_goto(label)),
+              label_counter,
+            )
+          }
           parser.CIfGoto(label) -> {
             #(
               assembled_list
