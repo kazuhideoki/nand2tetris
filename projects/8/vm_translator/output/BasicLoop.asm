@@ -18,6 +18,10 @@ M=D
 D=A
 @THAT
 M=D
+@3
+D=A
+@400
+M=D
 @0
 D=A
 @SP

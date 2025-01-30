@@ -45,8 +45,6 @@ pub fn parse_lines(raw_string: String) -> List(String) {
   |> list.filter(fn(row) { string.starts_with(row, "//") == False })
   // `//` を分離して、後ろを削除する
   |> list.map(fn(row) {
-    io.debug("🟡")
-    io.debug(row)
     case string.split(row, "//") {
       [head, _] -> {
         let r = head |> string.trim
@@ -64,6 +62,8 @@ pub fn parse_lines(raw_string: String) -> List(String) {
 }
 
 pub fn parse_line(str: String) -> CommandType {
+    io.debug("🟡")
+    io.debug(str)
   case str {
     "push " <> segment_and_index -> {
       let parts =
@@ -118,7 +118,7 @@ pub fn parse_line(str: String) -> CommandType {
       || str == "or"
       || str == "not"
     -> CArithmetic(str)
-    "labe " <> label -> CLabel(label)
+    "label " <> label -> CLabel(label)
     "if-goto " <> label -> CIfGoto(label)
     _ -> panic
   }

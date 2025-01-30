@@ -16,6 +16,7 @@ pub fn generate_first_lines() -> List(String) {
     "@256", "D=A", "@SP", "M=D", "@300", "D=A", "@LCL", "M=D", "@400", "D=A",
     "@ARG", "M=D", "@3000", "D=A", "@THIS", "M=D", "@3010", "D=A", "@THAT",
     "M=D",
+    // "@3", "D=A", "@400", "M=D" // BasicLoop で使う
   ]
 }
 
