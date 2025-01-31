@@ -69,6 +69,20 @@ pub fn main() {
               label_counter,
             )
           }
+          parser.CFunction(name, n) -> {
+            #(
+              assembled_list
+                |> list.append(code_writer.write_function(name, n)),
+              label_counter,
+            )
+          }
+          parser.CReturn -> {
+            #(
+              assembled_list
+                |> list.append(code_writer.write_return()),
+              label_counter,
+            )
+          }
         }
       },
     )

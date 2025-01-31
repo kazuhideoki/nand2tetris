@@ -16,6 +16,8 @@ pub type CommandType {
   CLabel(String)
   CGoto(String)
   CIfGoto(String)
+  CFunction(String, Int)
+  CReturn
 }
 
 pub type Segment {
@@ -63,8 +65,8 @@ pub fn parse_lines(raw_string: String) -> List(String) {
 }
 
 pub fn parse_line(str: String) -> CommandType {
-    io.debug("🟡")
-    io.debug(str)
+  io.debug("🟡")
+  io.debug(str)
   case str {
     "push " <> segment_and_index -> {
       let parts =
@@ -122,6 +124,21 @@ pub fn parse_line(str: String) -> CommandType {
     "label " <> label -> CLabel(label)
     "goto " <> label -> CGoto(label)
     "if-goto " <> label -> CIfGoto(label)
+    "function " <> function_and_n_locals -> {
+      let parts =
+        function_and_n_locals
+        |> string.split(" ")
+      case parts {
+        [function, n_locals_str] -> {
+          case int.parse(n_locals_str) {
+            Ok(n_locals) -> CFunction(function, n_locals)
+            _ -> panic
+          }
+        }
+        _ -> panic
+      }
+    }
+    "return" -> CReturn
     _ -> panic
   }
 }

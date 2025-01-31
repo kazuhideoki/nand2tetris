@@ -17,7 +17,7 @@ pub fn generate_first_lines() -> List(String) {
     "@ARG", "M=D", "@3000", "D=A", "@THIS", "M=D", "@3010", "D=A", "@THAT",
     "M=D",
     // "@3", "D=A", "@400", "M=D" // BasicLoop で使う
-    // "@6", "D=A", "@400", "M=D", "@3000", "D=A", "@401", "M=D", // FibonacciSeries で使う argument[0]と[1]に初期値を入れる
+  // "@6", "D=A", "@400", "M=D", "@3000", "D=A", "@401", "M=D", // FibonacciSeries で使う argument[0]と[1]に初期値を入れる
   ]
 }
 
@@ -280,4 +280,63 @@ pub fn write_if(label: String) -> List(String) {
   // pop する
   // false(0) でなければ label の位置から実行を継続 (0 以外なら true)
   ["@SP", "AM=M-1", "D=M", "@" <> label, "D;JNE"]
+}
+
+// (f)                  // 関数の開始ラベルをコードに挿入する
+// repeat nVars times:  // nVars = ローカル変数の数
+//   push 0             // ローカル変数を0で初期化する
+pub fn write_function(name: String, num_vars: Int) {
+  let function_label = ["(" <> name <> ")"]
+
+  let init_local_vars =
+    list.range(0, num_vars - 1)
+    |> list.map(fn(index) {
+      ["@LCL", "D=M", "@" <> int.to_string(index), "A=D+A", "D=0"]
+    })
+    |> list.flatten
+
+  function_label |> list.append(init_local_vars)
+}
+
+// push returnAddress   // ラベルを生成し、スタックにpushする
+// push LCL             // 関数の呼び出し側のLCLを保存する
+// push ARG             // 関数の呼び出し側のARGを保存する
+// push THIS            // 関数の呼び出し側のTHISを保存する
+// push THAT            // 関数の呼び出し側のTHATを保存する
+// ARG = SP - 5 - nArgs // ARGを変更する
+// LCL = SP             // LCLを変更する
+// goto f               // 呼び出される側へ制御を移す
+// (returnAddress)      // returnアドレスラベルをコードに挿入する
+pub fn write_call() {
+  todo
+}
+
+// frame = LCL            // frameは一時変数
+// retAddr = *(frame-5)   // returnアドレスを一時変数に入れる
+// *ARG = pop()           // 呼び出し側の戻り値の場所に移す
+// SP = ARG + 1           // 呼び出し側のSPを別の場所に移す
+// THAT = *(frame-1)      // 呼び出し側のTHATを復元する
+// THIS = *(frame-2)      // 呼び出し側のTHISを復元する
+// ARG = *(frame-3)       // 呼び出し側のARGを復元する
+// LCL = *(frame-4)       // 呼び出し側のLCLを復元する
+// goto retAddr           // returnアドレスへ移動する
+pub fn write_return() {
+  // LCL の値を (FRAME) として R13 に保存, return address を R14 に保存
+  ["@LCL", "D=M", "@R13", "M=D", "@5", "A=D-A", "D=M", "@R14", "M=D"]
+  |> list.append([
+    // 返り値を ARG に格納
+    "@SP", "AM=M-1", "D=M", "@ARG", "A=M", "M=D", "D=A+1", "@SP", "M=D",
+  ])
+  |> list.append([
+    // THAT, THIS を復元
+    "@R13", "AM=M-1", "D=M", "@THAT", "M=D", "@R13", "AM=M-1", "D=M", "@THIS",
+    "M=D",
+  ])
+  |> list.append([
+    // ARG, LCL を復元
+    "@R13", "AM=M-1", "D=M", "@ARG", "M=D", "@R13", "AM=M-1", "D=M", "@LCL",
+    "M=D",
+  ])
+  // return address へジャンプ
+  |> list.append(["@R14", "A=M", "0;JMP"])
 }
