@@ -17,6 +17,7 @@ pub type CommandType {
   CGoto(String)
   CIfGoto(String)
   CFunction(String, Int)
+  CCall(String, Int)
   CReturn
 }
 
@@ -65,8 +66,6 @@ pub fn parse_lines(raw_string: String) -> List(String) {
 }
 
 pub fn parse_line(str: String) -> CommandType {
-  io.debug("🟡")
-  io.debug(str)
   case str {
     "push " <> segment_and_index -> {
       let parts =
@@ -132,6 +131,20 @@ pub fn parse_line(str: String) -> CommandType {
         [function, n_locals_str] -> {
           case int.parse(n_locals_str) {
             Ok(n_locals) -> CFunction(function, n_locals)
+            _ -> panic
+          }
+        }
+        _ -> panic
+      }
+    }
+    "call " <> function_and_n_args -> {
+      let parts =
+        function_and_n_args
+        |> string.split(" ")
+      case parts {
+        [function, n_args_str] -> {
+          case int.parse(n_args_str) {
+            Ok(n_args) -> CCall(function, n_args)
             _ -> panic
           }
         }

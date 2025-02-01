@@ -76,6 +76,13 @@ pub fn main() {
               label_counter,
             )
           }
+          parser.CCall(name, n) -> {
+            #(
+              assembled_list
+                |> list.append(code_writer.write_call(name, n)),
+              label_counter,
+            )
+          }
           parser.CReturn -> {
             #(
               assembled_list

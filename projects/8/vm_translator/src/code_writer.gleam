@@ -14,16 +14,16 @@ import parser.{
 pub fn generate_first_lines() -> List(String) {
   [
     // "@256", "D=A", "@SP", "M=D", "@300", "D=A", "@LCL", "M=D", "@400", "D=A",
-    // "@ARG", "M=D", "@3000", "D=A", "@THIS", "M=D", "@3010", "D=A", "@THAT",
-    // "M=D",
-    // "@3", "D=A", "@400", "M=D" // BasicLoop で使う
-    // "@6", "D=A", "@400", "M=D", "@3000", "D=A", "@401", "M=D", // FibonacciSeries で使う argument[0]と[1]に初期値を入れる
-    // for SimpleFunction
-    "@317", "D=A", "@SP", "M=D", "@317", "D=A", "@LCL", "M=D", "@310", "D=A",
-    "@ARG", "M=D", "@3000", "D=A", "@THIS", "M=D", "@4000", "D=A", "@THAT",
-    "M=D", "@1234", "D=A", "@310", "M=D", "@37", "D=A", "@311", "M=D", "@1000",
-    "D=A", "@312", "M=D", "@305", "D=A", "@313", "M=D", "@300", "D=A", "@314",
-    "M=D", "@3010", "D=A", "@315", "M=D", "@4010", "D=A", "@316", "M=D",
+  // "@ARG", "M=D", "@3000", "D=A", "@THIS", "M=D", "@3010", "D=A", "@THAT",
+  // "M=D",
+  // "@3", "D=A", "@400", "M=D" // BasicLoop で使う
+  // "@6", "D=A", "@400", "M=D", "@3000", "D=A", "@401", "M=D", // FibonacciSeries で使う argument[0]と[1]に初期値を入れる
+  // for SimpleFunction
+  // "@317", "D=A", "@SP", "M=D", "@317", "D=A", "@LCL", "M=D", "@310", "D=A",
+  // "@ARG", "M=D", "@3000", "D=A", "@THIS", "M=D", "@4000", "D=A", "@THAT",
+  // "M=D", "@1234", "D=A", "@310", "M=D", "@37", "D=A", "@311", "M=D", "@1000",
+  // "D=A", "@312", "M=D", "@305", "D=A", "@313", "M=D", "@300", "D=A", "@314",
+  // "M=D", "@3010", "D=A", "@315", "M=D", "@4010", "D=A", "@316", "M=D",
   ]
 }
 
@@ -313,8 +313,36 @@ pub fn write_function(name: String, num_vars: Int) {
 // LCL = SP             // LCLを変更する
 // goto f               // 呼び出される側へ制御を移す
 // (returnAddress)      // returnアドレスラベルをコードに挿入する
-pub fn write_call() {
-  todo
+pub fn write_call(function_name: String, num_args: Int) {
+  // 本当はもっと厳密にした方がいいが、簡易的に乱数生成して一意なラベルを生成している
+  let prefix = int.random(1_000_000) |> int.to_string
+  let return_address_label = prefix <> ".returnAddress"
+  ["@" <> return_address_label, "D=A", "@SP", "A=M", "M=D", "@SP", "M=M+1"]
+  // LCL の値をスタックに push
+  |> list.append(["@LCL", "D=M", "@SP", "A=M", "M=D", "@SP", "M=M+1"])
+  // ARG の値をスタックに push
+  |> list.append(["@ARG", "D=M", "@SP", "A=M", "M=D", "@SP", "M=M+1"])
+  // THIS の値をスタックに push
+  |> list.append(["@THIS", "D=M", "@SP", "A=M", "M=D", "@SP", "M=M+1"])
+  // THAT の値をスタックに push
+  |> list.append(["@THAT", "D=M", "@SP", "A=M", "M=D", "@SP", "M=M+1"])
+  // ARG を変更
+  |> list.append([
+    "@SP",
+    "D=M",
+    "@5",
+    "D=D-A",
+    "@" <> int.to_string(num_args),
+    "D=D-A",
+    "@ARG",
+    "M=D",
+  ])
+  // LCL を変更
+  |> list.append(["@SP", "D=M", "@LCL", "M=D"])
+  // 関数の開始位置へジャンプ
+  |> list.append(["@" <> function_name, "0;JMP"])
+  // returnAddress ラベルを挿入
+  |> list.append(["(" <> return_address_label <> ")"])
 }
 
 // frame = LCL            // frameは一時変数
