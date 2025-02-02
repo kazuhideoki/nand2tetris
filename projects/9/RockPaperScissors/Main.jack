@@ -1,10 +1,129 @@
-// ユーザーから `r`, `p, `s` が入力されるまで待機
-// 相手側の手をランダムで選択
-// 結果を表示
-// ユーザーが `q` を入力するまで繰り返す
-
 class Main {
     function void main() {
+        var int inputChar;   // キー入力された文字のASCIIコード
+        var int inputDigit;  // 1=rock, 2=scissors, 3=paper, 9=quit
+        var int opponent;    // 相手の手 (1,2,3)
+        var int random;      // 0～2の乱数 +1 → 1～3
+        var int loopDone;    // ループ継続フラグ
+        var int counter;     // ユーザーが押すまで回すカウンタ
 
+        let loopDone = 0;
+
+        while (loopDone = 0) {
+            // 遊び方のメッセージを表示
+            do Output.printString("Enter 1(rock), 2(scissors), 3(paper), 9(quit): ");
+            do Output.printChar(128); // Hack 環境の改行コード(または 10)
+
+            // キーが押されるまでカウンタを回す
+            let counter = 0;
+            while (Keyboard.keyPressed() = 0) {
+                let counter = counter + 1;
+            }
+
+            // 押されたキーのASCIIコードを取得
+            let inputChar = Keyboard.readChar();
+
+            // '0'のASCIIコードは48なので、そこからの差分で数字に変換
+            let inputDigit = inputChar - 48;
+
+            // もし入力が 9(quit) なら whileループを抜ける
+            if (inputDigit = 9) {
+                let loopDone = 1;
+            } else {
+                // カウンタから 0～2 の値にする（擬似乱数）
+                let random = counter;
+                while (random > 2) {
+                    let random = random - 3;
+                }
+                // そこに +1 して 1,2,3 にする
+                let random = random + 1;
+
+                // 相手の手を random (1=rock,2=scissors,3=paper) とする
+                let opponent = random;
+
+                // 自分の手を文字として画面に表示
+                do Output.printString("You chose: ");
+                do Output.printChar(128); // Hack 環境の改行コード(または 10)
+                if (inputDigit = 1) {
+                    do Output.printString("rock");
+                    do Output.printChar(128); // Hack 環境の改行コード(または 10)
+                } else {
+                    if (inputDigit = 2) {
+                        do Output.printString("scissors");
+                        do Output.printChar(128); // Hack 環境の改行コード(または 10)
+                    } else {
+                        if (inputDigit = 3) {
+                            do Output.printString("paper");
+                            do Output.printChar(128); // Hack 環境の改行コード(または 10)
+                        } else {
+                            // 1,2,3以外が入力された場合はスキップするなど適宜
+                            do Output.printString("???");
+                            do Output.printChar(128); // Hack 環境の改行コード(または 10)
+                        }
+                    }
+                }
+
+                // 相手の手を文字として表示
+                do Output.printString("Opponent chose: ");
+                do Output.printChar(128); // Hack 環境の改行コード(または 10)
+                if (opponent = 1) {
+                    do Output.printString("rock");
+                    do Output.printChar(128); // Hack 環境の改行コード(または 10)
+                } else {
+                    if (opponent = 2) {
+                        do Output.printString("scissors");
+                        do Output.printChar(128); // Hack 環境の改行コード(または 10)
+                    } else {
+                        do Output.printString("paper"); // 3
+                        do Output.printChar(128); // Hack 環境の改行コード(または 10)
+                    }
+                }
+
+                // 勝敗判定 (rock1,scissors2,paper3)
+                // 同じならTie
+                if (inputDigit = opponent) {
+                    do Output.printString("→ Tie");
+                    do Output.printChar(128); // Hack 環境の改行コード(または 10)
+                } else {
+                    // 自分がrock(1)
+                    if (inputDigit = 1) {
+                        // 相手がscissors(2)ならwin、paper(3)ならlose
+                        if (opponent = 2) {
+                            do Output.printString("→ win!");
+                            do Output.printChar(128); // Hack 環境の改行コード(または 10)
+                        } else {
+                            do Output.printString("→ lose");
+                            do Output.printChar(128); // Hack 環境の改行コード(または 10)
+                        }
+                    } else {
+                        // 自分がscissors(2)
+                        if (inputDigit = 2) {
+                            // 相手がpaper(3)ならwin、rock(1)ならlose
+                            if (opponent = 3) {
+                                do Output.printString("→ win!");
+                                do Output.printChar(128); // Hack 環境の改行コード(または 10)
+                            } else {
+                                do Output.printString("→ lose");
+                                do Output.printChar(128); // Hack 環境の改行コード(または 10)
+                            }
+                        } else {
+                            // 自分がpaper(3)
+                            // 相手がrock(1)ならwin、scissors(2)ならlose
+                            if (opponent = 1) {
+                                do Output.printString("→ win!");
+                                do Output.printChar(128); // Hack 環境の改行コード(または 10)
+                            } else {
+                                do Output.printString("→ lose");
+                                do Output.printChar(128); // Hack 環境の改行コード(または 10)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        do Output.printString(" quit");
+        do Output.printChar(128); // Hack 環境の改行コード(または 10)
+        return;
     }
 }
