@@ -10,8 +10,3 @@ pub fn get_raw_string(args: List(String)) -> Result(String, Nil) {
 
   Ok(file)
 }
-
-// コメントと空白の除去
-pub fn parse_lines(raw_string: String) -> List(String) {
-  todo
-}
