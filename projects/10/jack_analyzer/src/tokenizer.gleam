@@ -1,192 +1,81 @@
-import gleam/int
-import gleam/io
 import gleam/list
 import gleam/string
 
 pub type TokenType {
-  Keyword(KeyWord)
+  Keyword(String)
   Symbol(String)
   IntConst(Int)
   StringConst(String)
   Identifier(String)
 }
 
-pub type KeyWord {
-  Class
-  Method
-  Function
-  Constructor
-  Int
-  Boolean
-  Char
-  Void
-  Var
-  Static
-  Field
-  Let
-  Do
-  If
-  Else
-  While
-  Return
-  True
-  False
-  Null
-  This
+const keywords = [
+  "class", "method", "function", "constructor", "int", "boolean", "char", "void",
+  "var", "static", "field", "let", "do", "if", "else", "while", "return", "true",
+  "false", "null", "this",
+]
+
+const symbols = [
+  "{", "}", "(", ")", "[", "]", ".", ",", ";", "+", "-", "*", "/", "&", "|", "<",
+  ">", "=", "~",
+]
+
+/// "//" 1行コメント, "/**" or "/*" 複数行コメント中であるかどうか
+type TokenizerState {
+  State(
+    in_single_line_comment: Bool,
+    in_double_line_comment: Bool,
+    in_literal: Bool,
+  )
 }
 
-// TODO 現実装だと
-// - "main()" みたいになる。
-// - ; , なども分離できない
-// -> つまり、identifier で symbol がくっついてても判別できてない
+// 新設計
+// 0. 状態保持 [SLコメント, MLコメント]
+// 1. 1文字づつ検証。creating_token に追加
+// 2. creating_token を token として成り立ったかどうか確認
+//  -> 成り立ったら結果 tokens に格納, creating_token をリセットして次の文字へ
+//  -> 成り立たなければ 次の文字へ
+// 3. 1~2 を繰り返す。文字がなくなったら終わり
 
-// コメント除去 -> トークンパース を繰り返す
-pub fn parse(raw_string: String) -> List(TokenType) {
-  let raw_tokens = generate_raw_tokens(raw_string)
-  io.debug(raw_tokens)
-  raw_tokens |> list.map(parse_one_token)
+fn parse(raw_string: String) {
+  let chars = string.to_graphemes(raw_string)
+  let initial_state =
+    State(
+      in_single_line_comment: False,
+      in_double_line_comment: False,
+      in_literal: False,
+    )
 }
 
-// 再起的に remove_comment_and_space を適用し、トークンのリストを生成する
-fn generate_raw_tokens(raw_string: String) -> List(String) {
-  case raw_string {
-    "" -> []
+// token の作成は？
+
+/// 1文字を扱う
+fn handle_char(
+  char: String,
+  // single_comment, doudle_comment, literal
+  state: #(Bool, Bool, Bool),
+  // token として格納される char, next token, state
+) -> #(String, Bool, #(Bool, Bool, Bool)) {
+  case state {
+    // `//` のコメント中
+    #(True, d, l) -> {
+      let finished = case char {
+        "\n" -> True
+        _ -> False
+      }
+
+      #("", False, #(!finished, d, l))
+
+      todo
+    }
+    #(_, True, _) -> {
+      todo
+    }
+    #(_, _, True) -> {
+      todo
+    }
     _ -> {
-      case remove_comment_and_space(raw_string) |> string.split(" ") {
-        [token, ..rest] ->
-          rest
-          |> string.join(" ")
-          |> generate_raw_tokens
-          |> list.prepend(string.trim(token))
-        _ -> panic
-      }
+      todo
     }
   }
-}
-
-// /＊から＊／までのコメント
-// /**から＊／までのAPIコメント
-// 行末までの／／コメント
-fn remove_comment_and_space(str: String) -> String {
-  case string.trim(str) {
-    "//" <> rest -> {
-      case string.split(rest, "\n") {
-        [_, ..next] -> {
-          next |> string.join("\n") |> string.trim |> remove_comment_and_space
-        }
-        _ -> panic
-      }
-    }
-    "/**" <> rest -> {
-      case string.split(rest, "*/") {
-        [_, ..next] ->
-          next |> string.join("\n") |> string.trim |> remove_comment_and_space
-        _ -> panic
-      }
-    }
-    "/*" <> rest -> {
-      case string.split(rest, "*/") {
-        [_, ..next] ->
-          next |> string.join("\n") |> string.trim |> remove_comment_and_space
-        _ -> panic
-      }
-    }
-    _ -> str |> string.trim
-  }
-}
-
-/// 1つのトークンをパースする
-fn parse_one_token(str: String) {
-  case int.parse(str) {
-    Ok(int) -> IntConst(int)
-    Error(_) ->
-      case str {
-        "class" -> Keyword(Class)
-        "method" -> Keyword(Method)
-        "function" -> Keyword(Function)
-        "constructor" -> Keyword(Constructor)
-        "int" -> Keyword(Int)
-        "boolean" -> Keyword(Boolean)
-        "char" -> Keyword(Char)
-        "void" -> Keyword(Void)
-        "var" -> Keyword(Var)
-        "static" -> Keyword(Static)
-        "field" -> Keyword(Field)
-        "let" -> Keyword(Let)
-        "do" -> Keyword(Do)
-        "if" -> Keyword(If)
-        "else" -> Keyword(Else)
-        "while" -> Keyword(While)
-        "return" -> Keyword(Return)
-        "true" -> Keyword(True)
-        "false" -> Keyword(False)
-        "null" -> Keyword(Null)
-        "this" -> Keyword(This)
-        "{" -> Symbol("{")
-        "}" -> Symbol("}")
-        "(" -> Symbol("(")
-        ")" -> Symbol(")")
-        "[" -> Symbol("[")
-        "]" -> Symbol("]")
-        "." -> Symbol(".")
-        "," -> Symbol(",")
-        ";" -> Symbol(";")
-        "+" -> Symbol("+")
-        "-" -> Symbol("-")
-        "*" -> Symbol("*")
-        "/" -> Symbol("/")
-        "&" -> Symbol("&")
-        "|" -> Symbol("|")
-        "<" -> Symbol("<")
-        ">" -> Symbol(">")
-        "=" -> Symbol("=")
-        "~" -> Symbol("~")
-        "\"" <> rest -> {
-          case string.split(rest, "\"") {
-            [str, ..] -> StringConst(str)
-            _ -> panic
-          }
-        }
-        _ -> Identifier(str)
-      }
-  }
-}
-
-pub fn add_xml(token: TokenType) -> String {
-  case token {
-    Keyword(keyword) -> {
-      case keyword {
-        Class -> "class"
-        Method -> "method"
-        Function -> "function"
-        Constructor -> "constructor"
-        Int -> "int"
-        Boolean -> "boolean"
-        Char -> "char"
-        Void -> "void"
-        Var -> "var"
-        Static -> "static"
-        Field -> "field"
-        Let -> "let"
-        Do -> "do"
-        If -> "if"
-        Else -> "else"
-        While -> "while"
-        Return -> "return"
-        True -> "true"
-        False -> "false"
-        Null -> "null"
-        This -> "this"
-      }
-      |> add_bracket("keyword")
-    }
-    Symbol(str) -> str |> add_bracket("symbol")
-    IntConst(num) -> num |> int.to_string |> add_bracket("integerConstant")
-    StringConst(str) -> str |> add_bracket("stringConstant")
-    Identifier(str) -> str |> add_bracket("identifier")
-  }
-}
-
-fn add_bracket(str: String, token_type_str: String) {
-  "<" <> token_type_str <> "> " <> str <> " </" <> token_type_str <> ">"
 }
