@@ -13,15 +13,13 @@ pub fn main() {
   )
 
   let tokens = tokenizer.parse(raw_string)
-  // io.debug(tokens)
 
-  // let xml = tokenizer.add_xml(tokens)
   let xml =
     tokens
     |> list.map(tokenizer.add_xml)
     |> string.join("\n")
-    |> fn(s) { "<tokens>" <> s <> "</tokens>" }
-  io.debug(xml)
+    |> fn(s) { "<tokens>\n" <> s <> "</tokens>" }
+  io.print(xml)
 
   Ok(Nil)
 }

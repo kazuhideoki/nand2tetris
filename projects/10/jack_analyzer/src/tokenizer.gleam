@@ -35,9 +35,15 @@ pub type KeyWord {
   This
 }
 
+// TODO 現実装だと
+// - "main()" みたいになる。
+// - ; , なども分離できない
+// -> つまり、identifier で symbol がくっついてても判別できてない
+
 // コメント除去 -> トークンパース を繰り返す
 pub fn parse(raw_string: String) -> List(TokenType) {
   let raw_tokens = generate_raw_tokens(raw_string)
+  io.debug(raw_tokens)
   raw_tokens |> list.map(parse_one_token)
 }
 
@@ -48,7 +54,10 @@ fn generate_raw_tokens(raw_string: String) -> List(String) {
     _ -> {
       case remove_comment_and_space(raw_string) |> string.split(" ") {
         [token, ..rest] ->
-          rest |> string.join(" ") |> generate_raw_tokens |> list.prepend(token)
+          rest
+          |> string.join(" ")
+          |> generate_raw_tokens
+          |> list.prepend(string.trim(token))
         _ -> panic
       }
     }
@@ -82,7 +91,7 @@ fn remove_comment_and_space(str: String) -> String {
         _ -> panic
       }
     }
-    _ -> str
+    _ -> str |> string.trim
   }
 }
 
@@ -179,5 +188,5 @@ pub fn add_xml(token: TokenType) -> String {
 }
 
 fn add_bracket(str: String, token_type_str: String) {
-  "<" <> token_type_str <> ">" <> str <> "</" <> token_type_str <> ">"
+  "<" <> token_type_str <> "> " <> str <> " </" <> token_type_str <> ">"
 }
