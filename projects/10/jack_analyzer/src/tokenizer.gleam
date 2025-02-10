@@ -34,11 +34,7 @@ fn tokenize_loop(
 ) -> List(TokenI) {
   case chars, state {
     // 入力がなくなったとき
-    [], Normal ->
-      case current {
-        "" -> tokens
-        _ -> list.append(tokens, [classify_token(current)])
-      }
+    [], Normal -> flush(current, tokens)
     [], InString ->
       // 終了していない文字列リテラルはそのままトークンにする
       list.append(tokens, [#(StringConstant, current)])
@@ -80,24 +76,17 @@ fn tokenize_loop(
         ["/", next, ..rest2] ->
           case next {
             "/" -> {
-              let new_tokens = case current {
-                "" -> tokens
-                _ -> list.append(tokens, [classify_token(current)])
-              }
+              let new_tokens = flush(current, tokens)
               tokenize_loop(rest2, "", new_tokens, InLineComment)
             }
             "*" -> {
-              let new_tokens = case current {
-                "" -> tokens
-                _ -> list.append(tokens, [classify_token(current)])
-              }
+              let new_tokens = flush(current, tokens)
               tokenize_loop(rest2, "", new_tokens, InBlockComment)
             }
             _ -> {
-              let new_tokens = case current {
+              let new_tokens = case string.trim(current) {
                 "" -> list.append(tokens, [#(Symbol, "/")])
-                _ ->
-                  list.append(tokens, [classify_token(current), #(Symbol, "/")])
+                _ -> list.append(flush(current, tokens), [#(Symbol, "/")])
               }
               tokenize_loop(list.prepend(rest2, next), "", new_tokens, Normal)
             }
@@ -106,63 +95,54 @@ fn tokenize_loop(
         [char, ..rest] ->
           case char {
             "\"" -> {
-              case current {
-                "" -> {
-                  tokenize_loop(rest, "", tokens, InString)
-                }
+              case string.trim(current) {
+                "" -> tokenize_loop(rest, "", tokens, InString)
                 _ -> {
-                  let new_tokens =
-                    list.append(tokens, [classify_token(current)])
+                  let new_tokens = flush(current, tokens)
                   tokenize_loop(rest, "", new_tokens, InString)
                 }
               }
             }
-
-            c -> {
+            c ->
               case is_whitespace(c) {
-                True -> {
-                  case current {
-                    "" -> {
-                      tokenize_loop(rest, "", tokens, Normal)
-                    }
+                True ->
+                  case string.trim(current) {
+                    "" -> tokenize_loop(rest, "", tokens, Normal)
                     _ -> {
-                      let new_tokens =
-                        list.append(tokens, [classify_token(current)])
+                      let new_tokens = flush(current, tokens)
                       tokenize_loop(rest, "", new_tokens, Normal)
                     }
                   }
-                }
-
-                False -> {
+                False ->
                   case is_symbol(c) {
-                    True -> {
-                      case current {
+                    True ->
+                      case string.trim(current) {
                         "" -> {
-                          let new_tokens = tokens
-                          let new_tokens2 =
-                            list.append(new_tokens, [#(Symbol, c)])
-                          tokenize_loop(rest, "", new_tokens2, Normal)
+                          let new_tokens = list.append(tokens, [#(Symbol, c)])
+                          tokenize_loop(rest, "", new_tokens, Normal)
                         }
                         _ -> {
-                          let new_tokens =
-                            list.append(tokens, [classify_token(current)])
+                          let new_tokens = flush(current, tokens)
                           let new_tokens2 =
                             list.append(new_tokens, [#(Symbol, c)])
                           tokenize_loop(rest, "", new_tokens2, Normal)
                         }
                       }
-                    }
-
-                    False -> {
-                      tokenize_loop(rest, current <> char, tokens, Normal)
-                    }
+                    False -> tokenize_loop(rest, current <> c, tokens, Normal)
                   }
-                }
               }
-            }
           }
         [] -> tokens
       }
+  }
+}
+
+/// flush: 現在のバッファが空白のみなら何も追加せず、そうでなければ classify_token でトークン化
+fn flush(current: String, tokens: List(TokenI)) -> List(TokenI) {
+  let trimmed = string.trim(current)
+  case trimmed {
+    "" -> tokens
+    _ -> list.append(tokens, [classify_token(trimmed)])
   }
 }
 
@@ -197,18 +177,25 @@ fn is_symbol(char: String) -> Bool {
 
 /// トークン文字列から種類を判定する
 pub fn classify_token(token: String) -> TokenI {
-  let keywords = [
-    "class", "constructor", "function", "method", "field", "static", "var",
-    "int", "char", "boolean", "void", "true", "false", "null", "this", "let",
-    "do", "if", "else", "while", "return",
-  ]
-  case list.contains(keywords, token) {
-    True -> #(Keyword, token)
-    False ->
-      case is_integer(token) {
-        True -> #(IntegerConstant, token)
-        False -> #(Identifier, token)
+  let trimmed = string.trim(token)
+  case trimmed {
+    "" -> #(Identifier, "")
+    // 本来ここは呼ばれないはず
+    _ -> {
+      let keywords = [
+        "class", "constructor", "function", "method", "field", "static", "var",
+        "int", "char", "boolean", "void", "true", "false", "null", "this", "let",
+        "do", "if", "else", "while", "return",
+      ]
+      case list.contains(keywords, trimmed) {
+        True -> #(Keyword, trimmed)
+        False ->
+          case is_integer(trimmed) {
+            True -> #(IntegerConstant, trimmed)
+            False -> #(Identifier, trimmed)
+          }
       }
+    }
   }
 }
 
