@@ -1,81 +1,160 @@
 import gleam/list
 import gleam/string
 
-pub type TokenType {
-  Keyword(String)
-  Symbol(String)
-  IntConst(Int)
-  StringConst(String)
-  Identifier(String)
+pub type State {
+  Normal
+  InString
+  InLineComment
+  InBlockComment
 }
 
-const keywords = [
-  "class", "method", "function", "constructor", "int", "boolean", "char", "void",
-  "var", "static", "field", "let", "do", "if", "else", "while", "return", "true",
-  "false", "null", "this",
-]
-
-const symbols = [
-  "{", "}", "(", ")", "[", "]", ".", ",", ";", "+", "-", "*", "/", "&", "|", "<",
-  ">", "=", "~",
-]
-
-/// "//" 1行コメント, "/**" or "/*" 複数行コメント中であるかどうか
-type TokenizerState {
-  State(
-    in_single_line_comment: Bool,
-    in_double_line_comment: Bool,
-    in_literal: Bool,
-  )
+pub fn tokenize(input: String) -> List(String) {
+  let chars = string.to_graphemes(input)
+  tokenize_loop(chars, "", [], Normal)
 }
 
-// 新設計
-// 0. 状態保持 [SLコメント, MLコメント]
-// 1. 1文字づつ検証。creating_token に追加
-// 2. creating_token を token として成り立ったかどうか確認
-//  -> 成り立ったら結果 tokens に格納, creating_token をリセットして次の文字へ
-//  -> 成り立たなければ 次の文字へ
-// 3. 1~2 を繰り返す。文字がなくなったら終わり
+fn tokenize_loop(
+  chars: List(String),
+  current: String,
+  tokens: List(String),
+  state: State,
+) -> List(String) {
+  case chars, state {
+    // 入力がなくなったとき
+    [], Normal ->
+      case current {
+        "" -> tokens
+        _ -> list.append(tokens, [current])
+      }
+    [], InString ->
+      // 終了していない文字列リテラルはそのままトークンにする
+      list.append(tokens, [current])
+    [], InLineComment -> tokens
+    [], InBlockComment -> tokens
 
-fn parse(raw_string: String) {
-  let chars = string.to_graphemes(raw_string)
-  let initial_state =
-    State(
-      in_single_line_comment: False,
-      in_double_line_comment: False,
-      in_literal: False,
-    )
-}
-
-// token の作成は？
-
-/// 1文字を扱う
-fn handle_char(
-  char: String,
-  // single_comment, doudle_comment, literal
-  state: #(Bool, Bool, Bool),
-  // token として格納される char, next token, state
-) -> #(String, Bool, #(Bool, Bool, Bool)) {
-  case state {
-    // `//` のコメント中
-    #(True, d, l) -> {
-      let finished = case char {
-        "\n" -> True
-        _ -> False
+    // 文字列リテラル状態: " の間はすべてそのまま蓄積
+    [char, ..rest], InString ->
+      case char {
+        "\"" -> tokenize_loop(rest, "", list.append(tokens, [current]), Normal)
+        _ -> tokenize_loop(rest, current <> char, tokens, InString)
       }
 
-      #("", False, #(!finished, d, l))
+    // 行コメント状態: 改行まで読み飛ばす
+    [char, ..rest], InLineComment ->
+      case char {
+        "\n" -> tokenize_loop(rest, "", tokens, Normal)
+        _ -> tokenize_loop(rest, current, tokens, InLineComment)
+      }
 
-      todo
-    }
-    #(_, True, _) -> {
-      todo
-    }
-    #(_, _, True) -> {
-      todo
-    }
-    _ -> {
-      todo
-    }
+    // ブロックコメント状態: "*/" が現れるまで読み飛ばす
+    ["*", "/", ..rest2], InBlockComment ->
+      tokenize_loop(rest2, "", tokens, Normal)
+    [_, ..rest2], InBlockComment ->
+      tokenize_loop(rest2, current, tokens, InBlockComment)
+
+    // Normal 状態
+    chars, Normal ->
+      case chars {
+        // "/" で始まる場合：次の文字でコメントか判定する
+        ["/", next, ..rest2] ->
+          case next {
+            "/" -> {
+              let new_tokens = case current {
+                "" -> tokens
+                _ -> list.append(tokens, [current])
+              }
+              tokenize_loop(rest2, "", new_tokens, InLineComment)
+            }
+            "*" -> {
+              let new_tokens = case current {
+                "" -> tokens
+                _ -> list.append(tokens, [current])
+              }
+              tokenize_loop(rest2, "", new_tokens, InBlockComment)
+            }
+            _ -> {
+              // コメント開始でなければ "/" を記号として扱う
+              let new_tokens = case current {
+                "" -> list.append(tokens, ["/"])
+                _ -> list.append(tokens, [current, "/"])
+              }
+              tokenize_loop(list.prepend(rest2, next), "", new_tokens, Normal)
+            }
+          }
+
+        // 通常の1文字処理
+        [char, ..rest] ->
+          case char == "\"" {
+            True -> {
+              // 文字列リテラルの開始
+              let new_tokens = case current {
+                "" -> tokens
+                _ -> list.append(tokens, [current])
+              }
+              tokenize_loop(rest, "", new_tokens, InString)
+            }
+            False ->
+              case is_whitespace(char) {
+                True -> {
+                  // 空白なら現在のバッファを確定
+                  let new_tokens = case current {
+                    "" -> tokens
+                    _ -> list.append(tokens, [current])
+                  }
+                  tokenize_loop(rest, "", new_tokens, Normal)
+                }
+                False ->
+                  case is_symbol(char) {
+                    True -> {
+                      // 記号なら、現在のバッファがあれば確定して記号を追加
+                      let new_tokens = case current {
+                        "" -> list.append(tokens, [char])
+                        _ -> list.append(tokens, [current, char])
+                      }
+                      tokenize_loop(rest, "", new_tokens, Normal)
+                    }
+                    False -> {
+                      // 通常文字はバッファに追加
+                      tokenize_loop(rest, current <> char, tokens, Normal)
+                    }
+                  }
+              }
+          }
+        [] -> tokens
+      }
   }
+}
+
+fn is_whitespace(char: String) -> Bool {
+  char == " " || char == "\n" || char == "\t"
+}
+
+fn is_symbol(char: String) -> Bool {
+  case char {
+    "{"
+    | "}"
+    | "("
+    | ")"
+    | "["
+    | "]"
+    | "."
+    | ","
+    | ";"
+    | "+"
+    | "-"
+    | "*"
+    | "/"
+    | "&"
+    | "|"
+    | "<"
+    | ">"
+    | "="
+    | "~" -> True
+    _ -> False
+  }
+}
+
+/// とりあえず全トークンを <token> タグで包む（本来は種類別に分ける）
+pub fn add_xml(token: String) -> String {
+  "<token>" <> token <> "</token>"
 }
