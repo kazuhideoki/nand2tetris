@@ -1,3 +1,4 @@
+import gleam/io
 import gleam/list
 import gleam/string
 
@@ -33,16 +34,19 @@ fn tokenize_loop(
     [], InBlockComment -> tokens
 
     // 文字列リテラル状態: " の間はすべてそのまま蓄積
-    [char, ..rest], InString ->
+    [char, ..rest], InString -> {
       case char {
         "\"" -> tokenize_loop(rest, "", list.append(tokens, [current]), Normal)
         _ -> tokenize_loop(rest, current <> char, tokens, InString)
       }
+    }
 
     // 行コメント状態: 改行まで読み飛ばす
     [char, ..rest], InLineComment ->
       case char {
+        "\r\n" -> tokenize_loop(rest, "", tokens, Normal)
         "\n" -> tokenize_loop(rest, "", tokens, Normal)
+        "\r" -> tokenize_loop(rest, "", tokens, Normal)
         _ -> tokenize_loop(rest, current, tokens, InLineComment)
       }
 
@@ -73,7 +77,6 @@ fn tokenize_loop(
               tokenize_loop(rest2, "", new_tokens, InBlockComment)
             }
             _ -> {
-              // コメント開始でなければ "/" を記号として扱う
               let new_tokens = case current {
                 "" -> list.append(tokens, ["/"])
                 _ -> list.append(tokens, [current, "/"])
