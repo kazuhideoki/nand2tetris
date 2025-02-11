@@ -1,5 +1,6 @@
 import gleam/int
 import gleam/list
+import gleam/option.{None, Some}
 import gleam/string
 
 /// 状態の種類を表す列挙型
@@ -195,5 +196,75 @@ fn escape_xml(s: String) -> String {
     ">" -> "&gt;"
     "&" -> "&amp;"
     _ -> s
+  }
+}
+
+import simbol_table.{kind_to_string, lookup}
+
+/// 各トークンを適切な XML タグで包む（シンボル情報付き版）
+/// 引数 table: SymbolTable、is_declaration: Bool は宣言時なら true、そうでなければ false
+pub fn add_xml_with_symbol(
+  token: Token,
+  table: simbol_table.SymbolTable,
+  is_declaration: Bool,
+) -> String {
+  let tag = case token.0 {
+    Keyword -> "keyword"
+    Symbol -> "symbol"
+    Identifier -> "identifier"
+    IntegerConstant -> "integerConstant"
+    StringConstant -> "stringConstant"
+  }
+  let value = case token.0 {
+    Symbol -> escape_xml(token.1)
+    _ -> token.1
+  }
+  case token.0 {
+    Identifier ->
+      case lookup(table, token.1) {
+        Some(symbol) ->
+          // symbol: #(symbol_type, kind, index)
+          "<"
+          <> tag
+          <> " name=\""
+          <> token.1
+          <> "\""
+          <> " kind=\""
+          <> kind_to_string(symbol.1)
+          <> "\""
+          <> " index=\""
+          <> int.to_string(symbol.2)
+          <> "\""
+          <> " use=\""
+          <> case is_declaration {
+            True -> "declared"
+            False -> "used"
+          }
+          <> "\"> "
+          <> token.1
+          <> " </"
+          <> tag
+          <> ">"
+        None ->
+          // 識別子がシンボルテーブルに登録されていなければ、kind を "class" と仮定
+          "<"
+          <> tag
+          <> " name=\""
+          <> token.1
+          <> "\""
+          <> " kind=\"class\""
+          <> " index=\"-1\""
+          <> " use=\""
+          <> case is_declaration {
+            True -> "declared"
+            False -> "used"
+          }
+          <> "\"> "
+          <> token.1
+          <> " </"
+          <> tag
+          <> ">"
+      }
+    _ -> "<" <> tag <> "> " <> value <> " </" <> tag <> ">"
   }
 }
