@@ -20,7 +20,6 @@ pub fn main() {
     |> list.map(tokenizer.add_xml)
     |> string.join("\n")
     |> fn(s) { "<tokens>\n" <> s <> "\n</tokens>" }
-  io.print(xml)
 
   // output/Output.xml に書き込み
   let _ = simplifile.write("output/Output.xml", xml)
