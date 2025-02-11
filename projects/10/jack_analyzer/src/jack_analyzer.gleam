@@ -4,6 +4,7 @@ import gleam/list
 import gleam/result
 import gleam/string
 import parser
+import simplifile
 import tokenizer
 
 pub fn main() {
@@ -20,6 +21,9 @@ pub fn main() {
     |> string.join("\n")
     |> fn(s) { "<tokens>\n" <> s <> "\n</tokens>" }
   io.print(xml)
+
+  // output/Output.xml に書き込み
+  let _ = simplifile.write("output/Output.xml", xml)
 
   Ok(Nil)
 }
