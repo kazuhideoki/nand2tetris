@@ -1,0 +1,142 @@
+<tokens>
+<keyword> class </keyword>
+<identifier name="Main" kind="class" index="-1" use="used"> Main </identifier>
+<symbol> { </symbol>
+<keyword> function </keyword>
+<keyword> void </keyword>
+<identifier name="main" kind="class" index="-1" use="used"> main </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> var </keyword>
+<identifier name="Array" kind="class" index="-1" use="used"> Array </identifier>
+<identifier name="a" kind="class" index="-1" use="used"> a </identifier>
+<symbol> ; </symbol>
+<keyword> var </keyword>
+<keyword> int </keyword>
+<identifier name="length" kind="class" index="-1" use="used"> length </identifier>
+<symbol> ; </symbol>
+<keyword> var </keyword>
+<keyword> int </keyword>
+<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<symbol> , </symbol>
+<identifier name="sum" kind="class" index="-1" use="used"> sum </identifier>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="length" kind="class" index="-1" use="used"> length </identifier>
+<symbol> = </symbol>
+<identifier name="Keyboard" kind="class" index="-1" use="used"> Keyboard </identifier>
+<symbol> . </symbol>
+<identifier name="readInt" kind="class" index="-1" use="used"> readInt </identifier>
+<symbol> ( </symbol>
+<stringConstant> HOW MANY NUMBERS?  </stringConstant>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="a" kind="class" index="-1" use="used"> a </identifier>
+<symbol> = </symbol>
+<identifier name="Array" kind="class" index="-1" use="used"> Array </identifier>
+<symbol> . </symbol>
+<identifier name="new" kind="class" index="-1" use="used"> new </identifier>
+<symbol> ( </symbol>
+<identifier name="length" kind="class" index="-1" use="used"> length </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<symbol> = </symbol>
+<integerConstant> 0 </integerConstant>
+<symbol> ; </symbol>
+<keyword> while </keyword>
+<symbol> ( </symbol>
+<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<symbol> &lt; </symbol>
+<identifier name="length" kind="class" index="-1" use="used"> length </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier name="a" kind="class" index="-1" use="used"> a </identifier>
+<symbol> [ </symbol>
+<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<symbol> ] </symbol>
+<symbol> = </symbol>
+<identifier name="Keyboard" kind="class" index="-1" use="used"> Keyboard </identifier>
+<symbol> . </symbol>
+<identifier name="readInt" kind="class" index="-1" use="used"> readInt </identifier>
+<symbol> ( </symbol>
+<stringConstant> ENTER THE NEXT NUMBER:  </stringConstant>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<symbol> = </symbol>
+<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<symbol> + </symbol>
+<integerConstant> 1 </integerConstant>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> let </keyword>
+<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<symbol> = </symbol>
+<integerConstant> 0 </integerConstant>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="sum" kind="class" index="-1" use="used"> sum </identifier>
+<symbol> = </symbol>
+<integerConstant> 0 </integerConstant>
+<symbol> ; </symbol>
+<keyword> while </keyword>
+<symbol> ( </symbol>
+<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<symbol> &lt; </symbol>
+<identifier name="length" kind="class" index="-1" use="used"> length </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier name="sum" kind="class" index="-1" use="used"> sum </identifier>
+<symbol> = </symbol>
+<identifier name="sum" kind="class" index="-1" use="used"> sum </identifier>
+<symbol> + </symbol>
+<identifier name="a" kind="class" index="-1" use="used"> a </identifier>
+<symbol> [ </symbol>
+<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<symbol> ] </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<symbol> = </symbol>
+<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<symbol> + </symbol>
+<integerConstant> 1 </integerConstant>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> do </keyword>
+<identifier name="Output" kind="class" index="-1" use="used"> Output </identifier>
+<symbol> . </symbol>
+<identifier name="printString" kind="class" index="-1" use="used"> printString </identifier>
+<symbol> ( </symbol>
+<stringConstant> THE AVERAGE IS:  </stringConstant>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="Output" kind="class" index="-1" use="used"> Output </identifier>
+<symbol> . </symbol>
+<identifier name="printInt" kind="class" index="-1" use="used"> printInt </identifier>
+<symbol> ( </symbol>
+<identifier name="sum" kind="class" index="-1" use="used"> sum </identifier>
+<symbol> / </symbol>
+<identifier name="length" kind="class" index="-1" use="used"> length </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="Output" kind="class" index="-1" use="used"> Output </identifier>
+<symbol> . </symbol>
+<identifier name="println" kind="class" index="-1" use="used"> println </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<symbol> } </symbol>
+</tokens>
