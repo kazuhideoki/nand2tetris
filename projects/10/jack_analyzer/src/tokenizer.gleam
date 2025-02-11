@@ -89,50 +89,35 @@ fn tokenize_loop(
               tokenize_loop(rest, "", new_tokens, InBlockComment)
             }
             _ -> {
-              let new_tokens = case string.trim(current) {
-                "" -> list.append(tokens, [#(Symbol, "/")])
-                _ -> list.append(flush(current, tokens), [#(Symbol, "/")])
-              }
+              // `/` のみは除算
+              let new_tokens =
+                list.append(flush(current, tokens), [#(Symbol, "/")])
               tokenize_loop(list.prepend(rest, next), "", new_tokens, Normal)
             }
           }
 
         // `\"` で、文字列リテラルに入る。
         ["\"", ..rest] -> {
-          case string.trim(current) {
-            "" -> tokenize_loop(rest, "", tokens, InString)
-            _ -> {
-              let new_tokens = flush(current, tokens)
-              tokenize_loop(rest, "", new_tokens, InString)
-            }
+          {
+            let new_tokens = flush(current, tokens)
+            tokenize_loop(rest, "", new_tokens, InString)
           }
         }
 
         [char, ..rest] ->
           case is_whitespace(char), is_symbol(char) {
-            // 空白であれば先に進める
-            True, _ ->
-              case string.trim(current) {
-                "" -> tokenize_loop(rest, "", tokens, Normal)
-                _ -> {
-                  let new_tokens = flush(current, tokens)
-                  tokenize_loop(rest, "", new_tokens, Normal)
-                }
-              }
-            // シンボルであれば、シンボルとして追加する
-            _, True ->
-              case string.trim(current) {
-                "" -> {
-                  let new_tokens = list.append(tokens, [#(Symbol, char)])
-                  tokenize_loop(rest, "", new_tokens, Normal)
-                }
-                // TODO ここの説明加える。なぜ new_tokens を2回作っているのか？
-                _ -> {
-                  let new_tokens = flush(current, tokens)
-                  let new_tokens2 = list.append(new_tokens, [#(Symbol, char)])
-                  tokenize_loop(rest, "", new_tokens2, Normal)
-                }
-              }
+            // 空白であれば Normal で進める
+            True, _ -> {
+              let new_tokens = flush(current, tokens)
+              tokenize_loop(rest, "", new_tokens, Normal)
+            }
+            // 現在のバッファに文字列が蓄積されている場合、まず flush でその文字列をトークン化し（new_tokens）、
+            // 次にシンボル自体（char）をトークンとして追加することで、両者を別々のトークンとして正しい順序で保持する。
+            _, True -> {
+              let new_tokens = flush(current, tokens)
+              let new_tokens2 = list.append(new_tokens, [#(Symbol, char)])
+              tokenize_loop(rest, "", new_tokens2, Normal)
+            }
             // いずれにも該当しない場合、現在生成中のトークンに追加する
             False, False -> tokenize_loop(rest, current <> char, tokens, Normal)
           }
@@ -155,28 +140,11 @@ fn is_whitespace(char: String) -> Bool {
 }
 
 fn is_symbol(char: String) -> Bool {
-  case char {
-    "{"
-    | "}"
-    | "("
-    | ")"
-    | "["
-    | "]"
-    | "."
-    | ","
-    | ";"
-    | "+"
-    | "-"
-    | "*"
-    | "/"
-    | "&"
-    | "|"
-    | "<"
-    | ">"
-    | "="
-    | "~" -> True
-    _ -> False
-  }
+  [
+    "{", "}", "(", ")", "[", "]", ".", ",", ";", "+", "-", "*", "/", "&", "|",
+    "<", ">", "=", "~",
+  ]
+  |> list.contains(char)
 }
 
 /// トークン文字列から種類を判定する
