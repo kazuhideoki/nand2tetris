@@ -3,8 +3,8 @@ import gleam/list
 import gleam/result
 import gleam/string
 import parser
-import simbol_table
 import simplifile
+import symbol_table
 import tokenizer
 
 // TODO 実行できるようになった。正しいかどうか調べる
@@ -25,7 +25,7 @@ pub fn main() {
   let tokens = tokenizer.tokenize(raw_string)
 
   // 新規シンボルテーブルを作成する
-  let sym_table = simbol_table.new_symbol_table()
+  let sym_table = symbol_table.new_symbol_table()
 
   // ここで本来は構文解析の中で「宣言」と「使用」を判断しつつシンボルテーブルを更新する処理を行う。
   // 例：静的宣言や変数宣言の場合は sym_table.define(...) を呼び出し、

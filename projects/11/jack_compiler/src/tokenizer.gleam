@@ -199,13 +199,13 @@ fn escape_xml(s: String) -> String {
   }
 }
 
-import simbol_table.{kind_to_string, lookup}
+import symbol_table.{kind_to_string, lookup}
 
 /// 各トークンを適切な XML タグで包む（シンボル情報付き版）
 /// 引数 table: SymbolTable、is_declaration: Bool は宣言時なら true、そうでなければ false
 pub fn add_xml_with_symbol(
   token: Token,
-  table: simbol_table.SymbolTable,
+  table: symbol_table.SymbolTable,
   is_declaration: Bool,
 ) -> String {
   let tag = case token.0 {
