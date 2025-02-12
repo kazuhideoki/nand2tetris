@@ -17,6 +17,22 @@ import tokenizer
 // <keyword> function </keyword>
 // <keyword> void </keyword>
 // <identifier name="main" kind="class" index="-1" use="used"> main </identifier>
+
+// ⭐️方針
+// 生成した tokens を再起的にチェックして SymbolTable を更新していく
+// var をチェックして宣言とする。
+// それ以外は 使用時とする
+// メソッド呼び出しをチェックして start_subroutine する
+// •	クラス変数の処理
+// → クラス宣言の段階で、static や field 宣言を検出してシンボルテーブルに登録する処理が必要。
+// 	•	サブルーチンの引数の処理
+// → メソッドのパラメータリストも、サブルーチンスコープの一部として define() で登録する必要がある。
+// 	•	start_subroutine のタイミング
+// → サブルーチン（メソッド）の開始時に start_subroutine() を呼んで、ローカルスコープをリセットするのは大事。
+// 	•	「this」ポインタの扱い
+// → メソッドの場合、暗黙の引数として this を扱う場合があるので、その処理も必要になるかも。
+
+// 要するに、再帰的にトークンを処理して var 宣言をチェックし、サブルーチン開始時に start_subroutine を呼ぶという基本方針はOKだけど、クラススコープや引数宣言の処理、そして必要に応じた this の扱いをきちんと実装できているか確認しておけば、問題ないと思うよ。
 pub fn main() {
   // コマンドライン引数から入力ファイルの内容を読み込む
   use raw_string <- result.try(argv.load().arguments |> parser.get_raw_string)
