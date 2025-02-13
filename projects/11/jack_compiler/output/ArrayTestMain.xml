@@ -4,7 +4,7 @@
 <symbol> { </symbol>
 <keyword> function </keyword>
 <keyword> void </keyword>
-<identifier name="main" kind="class" index="-1" use="used"> main </identifier>
+<identifier name="main" kind="class" index="-1" use="declared"> main </identifier>
 <symbol> ( </symbol>
 <symbol> ) </symbol>
 <symbol> { </symbol>
@@ -14,16 +14,16 @@
 <symbol> ; </symbol>
 <keyword> var </keyword>
 <keyword> int </keyword>
-<identifier name="length" kind="class" index="-1" use="used"> length </identifier>
+<identifier name="length" kind="var" index="0" use="declared"> length </identifier>
 <symbol> ; </symbol>
 <keyword> var </keyword>
 <keyword> int </keyword>
-<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<identifier name="i" kind="var" index="1" use="declared"> i </identifier>
 <symbol> , </symbol>
 <identifier name="sum" kind="class" index="-1" use="used"> sum </identifier>
 <symbol> ; </symbol>
 <keyword> let </keyword>
-<identifier name="length" kind="class" index="-1" use="used"> length </identifier>
+<identifier name="length" kind="var" index="0" use="used"> length </identifier>
 <symbol> = </symbol>
 <identifier name="Keyboard" kind="class" index="-1" use="used"> Keyboard </identifier>
 <symbol> . </symbol>
@@ -39,25 +39,25 @@
 <symbol> . </symbol>
 <identifier name="new" kind="class" index="-1" use="used"> new </identifier>
 <symbol> ( </symbol>
-<identifier name="length" kind="class" index="-1" use="used"> length </identifier>
+<identifier name="length" kind="var" index="0" use="used"> length </identifier>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 <keyword> let </keyword>
-<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<identifier name="i" kind="var" index="1" use="used"> i </identifier>
 <symbol> = </symbol>
 <integerConstant> 0 </integerConstant>
 <symbol> ; </symbol>
 <keyword> while </keyword>
 <symbol> ( </symbol>
-<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<identifier name="i" kind="var" index="1" use="used"> i </identifier>
 <symbol> &lt; </symbol>
-<identifier name="length" kind="class" index="-1" use="used"> length </identifier>
+<identifier name="length" kind="var" index="0" use="used"> length </identifier>
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <keyword> let </keyword>
 <identifier name="a" kind="class" index="-1" use="used"> a </identifier>
 <symbol> [ </symbol>
-<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<identifier name="i" kind="var" index="1" use="used"> i </identifier>
 <symbol> ] </symbol>
 <symbol> = </symbol>
 <identifier name="Keyboard" kind="class" index="-1" use="used"> Keyboard </identifier>
@@ -68,15 +68,15 @@
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 <keyword> let </keyword>
-<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<identifier name="i" kind="var" index="1" use="used"> i </identifier>
 <symbol> = </symbol>
-<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<identifier name="i" kind="var" index="1" use="used"> i </identifier>
 <symbol> + </symbol>
 <integerConstant> 1 </integerConstant>
 <symbol> ; </symbol>
 <symbol> } </symbol>
 <keyword> let </keyword>
-<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<identifier name="i" kind="var" index="1" use="used"> i </identifier>
 <symbol> = </symbol>
 <integerConstant> 0 </integerConstant>
 <symbol> ; </symbol>
@@ -87,9 +87,9 @@
 <symbol> ; </symbol>
 <keyword> while </keyword>
 <symbol> ( </symbol>
-<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<identifier name="i" kind="var" index="1" use="used"> i </identifier>
 <symbol> &lt; </symbol>
-<identifier name="length" kind="class" index="-1" use="used"> length </identifier>
+<identifier name="length" kind="var" index="0" use="used"> length </identifier>
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <keyword> let </keyword>
@@ -99,13 +99,13 @@
 <symbol> + </symbol>
 <identifier name="a" kind="class" index="-1" use="used"> a </identifier>
 <symbol> [ </symbol>
-<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<identifier name="i" kind="var" index="1" use="used"> i </identifier>
 <symbol> ] </symbol>
 <symbol> ; </symbol>
 <keyword> let </keyword>
-<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<identifier name="i" kind="var" index="1" use="used"> i </identifier>
 <symbol> = </symbol>
-<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<identifier name="i" kind="var" index="1" use="used"> i </identifier>
 <symbol> + </symbol>
 <integerConstant> 1 </integerConstant>
 <symbol> ; </symbol>
@@ -125,7 +125,7 @@
 <symbol> ( </symbol>
 <identifier name="sum" kind="class" index="-1" use="used"> sum </identifier>
 <symbol> / </symbol>
-<identifier name="length" kind="class" index="-1" use="used"> length </identifier>
+<identifier name="length" kind="var" index="0" use="used"> length </identifier>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 <keyword> do </keyword>
