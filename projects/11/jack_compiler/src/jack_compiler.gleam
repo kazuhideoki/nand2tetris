@@ -124,20 +124,18 @@ fn process_tokens(
   }
 }
 
+// jack_compiler.gleam
+// （全体はこれまでの実装と同じで、process_～ の部分のみ修正）
+
 /// クラス変数宣言を処理する
-/// パターン例: static int x ;
+/// パターン例: static int x, y ;
 fn process_class_var_dec(
   tokens: List(tokenizer.Token),
   sym_table: symbol_table.SymbolTable,
 ) -> #(symbol_table.SymbolTable, List(String), List(tokenizer.Token)) {
+  // 最初は「static」または「field」、型、最初の識別子が出現する
   case tokens {
-    [
-      #(tokenizer.Keyword, kind),
-      type_token,
-      identifier_token,
-      semicolon_token,
-      ..rest
-    ] -> {
+    [#(tokenizer.Keyword, kind), type_token, identifier_token, ..rest] -> {
       let symbol_kind = case kind {
         "static" -> symbol_table.Static
         "field" -> symbol_table.Field
@@ -157,30 +155,53 @@ fn process_class_var_dec(
           False,
         ),
         tokenizer.add_xml_with_symbol(type_token, sym_table, False),
-        // 宣言時は is_declaration = True とする
         tokenizer.add_xml_with_symbol(identifier_token, new_sym_table, True),
-        tokenizer.add_xml_with_symbol(semicolon_token, sym_table, False),
       ]
-      #(new_sym_table, xmls, rest)
+      // カンマ区切りの追加識別子およびセミコロンまで処理するローカル関数
+
+      process_rest1(type_token, symbol_kind, rest, new_sym_table, xmls)
     }
     _ -> #(sym_table, [], tokens)
   }
 }
 
+fn process_rest1(
+  type_token: tokenizer.Token,
+  symbol_kind: symbol_table.Kind,
+  tokens: List(tokenizer.Token),
+  table: symbol_table.SymbolTable,
+  acc: List(String),
+) -> #(symbol_table.SymbolTable, List(String), List(tokenizer.Token)) {
+  case tokens {
+    [#(tokenizer.Symbol, ","), next_id, ..more] -> {
+      let new_table =
+        symbol_table.define(table, next_id.1, type_token.1, symbol_kind)
+      let acc2 =
+        list.append(acc, [
+          tokenizer.add_xml_with_symbol(#(tokenizer.Symbol, ","), table, False),
+          tokenizer.add_xml_with_symbol(next_id, new_table, True),
+        ])
+      process_rest1(type_token, symbol_kind, more, new_table, acc2)
+    }
+    [#(tokenizer.Symbol, ";"), ..more] -> {
+      let acc2 =
+        list.append(acc, [
+          tokenizer.add_xml_with_symbol(#(tokenizer.Symbol, ";"), table, False),
+        ])
+      #(table, acc2, more)
+    }
+    _ -> #(table, acc, tokens)
+  }
+}
+
 /// ローカル変数宣言を処理する
-/// パターン例: var int y ;
+/// パターン例: var int y, z ;
 fn process_var_dec(
   tokens: List(tokenizer.Token),
   sym_table: symbol_table.SymbolTable,
 ) -> #(symbol_table.SymbolTable, List(String), List(tokenizer.Token)) {
   case tokens {
-    [
-      #(tokenizer.Keyword, "var"),
-      type_token,
-      identifier_token,
-      semicolon_token,
-      ..rest
-    ] -> {
+    [#(tokenizer.Keyword, "var"), type_token, identifier_token, ..rest] -> {
       let new_sym_table =
         symbol_table.define(
           sym_table,
@@ -196,125 +217,124 @@ fn process_var_dec(
         ),
         tokenizer.add_xml_with_symbol(type_token, sym_table, False),
         tokenizer.add_xml_with_symbol(identifier_token, new_sym_table, True),
-        tokenizer.add_xml_with_symbol(semicolon_token, sym_table, False),
       ]
-      #(new_sym_table, xmls, rest)
+
+      process_rest2(type_token, rest, new_sym_table, xmls)
     }
     _ -> #(sym_table, [], tokens)
   }
 }
 
+fn process_rest2(
+  type_token: tokenizer.Token,
+  tokens: List(tokenizer.Token),
+  table: symbol_table.SymbolTable,
+  acc: List(String),
+) -> #(symbol_table.SymbolTable, List(String), List(tokenizer.Token)) {
+  case tokens {
+    [#(tokenizer.Symbol, ","), next_id, ..more] -> {
+      let new_table =
+        symbol_table.define(table, next_id.1, type_token.1, symbol_table.Var)
+      let acc2 =
+        list.append(acc, [
+          tokenizer.add_xml_with_symbol(#(tokenizer.Symbol, ","), table, False),
+          tokenizer.add_xml_with_symbol(next_id, new_table, True),
+        ])
+      process_rest2(type_token, more, new_table, acc2)
+    }
+    [#(tokenizer.Symbol, ";"), ..more] -> {
+      let acc2 =
+        list.append(acc, [
+          tokenizer.add_xml_with_symbol(#(tokenizer.Symbol, ";"), table, False),
+        ])
+      #(table, acc2, more)
+    }
+    _ -> #(table, acc, tokens)
+  }
+}
+
 /// サブルーチン宣言を処理する
-/// 簡略化のため、パラメータが1つのみまたは空のパターンのみ扱う。
+/// パラメータリストが0個以上の場合に対応するように修正
 fn process_subroutine_dec(
   tokens: List(tokenizer.Token),
   sym_table: symbol_table.SymbolTable,
 ) -> #(symbol_table.SymbolTable, List(String), List(tokenizer.Token)) {
+  // パターン: (constructor|function|method) return_type subroutineName "(" parameterList? ")" ...
   case tokens {
-    // サブルーチン宣言＋1つのパラメータ例：
-    // (constructor|function|method) return_type subroutineName "(" type varName ")" ...
     [
-      #(tokenizer.Keyword, "constructor"),
+      #(tokenizer.Keyword, sub_kw),
       return_type,
       subroutine_name,
       open_paren,
-      type_token,
-      identifier_token,
-      close_paren,
       ..rest
-    ]
-    | [
-        #(tokenizer.Keyword, "function"),
-        return_type,
-        subroutine_name,
-        open_paren,
-        type_token,
-        identifier_token,
-        close_paren,
-        ..rest
-      ]
-    | [
-        #(tokenizer.Keyword, "method"),
-        return_type,
-        subroutine_name,
-        open_paren,
-        type_token,
-        identifier_token,
-        close_paren,
-        ..rest
-      ] -> {
+    ] -> {
       // サブルーチン開始時にローカルスコープをリセット
       let sub_sym_table = symbol_table.start_subroutine(sym_table)
-      let new_sym_table =
+      // open_paren の出力
+      let xml_acc = [
+        tokenizer.add_xml_with_symbol(open_paren, sub_sym_table, False),
+      ]
+
+      let #(sub_table, params_xml, after_params) =
+        process_params(rest, sub_sym_table, xml_acc)
+      let xmls =
+        list.append(
+          [
+            tokenizer.add_xml_with_symbol(
+              #(tokenizer.Keyword, sub_kw),
+              sym_table,
+              False,
+            ),
+            tokenizer.add_xml_with_symbol(return_type, sym_table, False),
+            tokenizer.add_xml_with_symbol(subroutine_name, sub_table, True),
+          ],
+          params_xml,
+        )
+      #(sub_table, xmls, after_params)
+    }
+    _ -> #(sym_table, [], tokens)
+  }
+}
+
+// パラメータリストを処理する local 関数
+fn process_params(
+  tokens: List(tokenizer.Token),
+  table: symbol_table.SymbolTable,
+  acc: List(String),
+) -> #(symbol_table.SymbolTable, List(String), List(tokenizer.Token)) {
+  case tokens {
+    // パラメータがない場合、最初に閉じ括弧が来る
+    [#(tokenizer.Symbol, ")"), ..more] -> {
+      let acc2 =
+        list.append(acc, [
+          tokenizer.add_xml_with_symbol(#(tokenizer.Symbol, ")"), table, False),
+        ])
+      #(table, acc2, more)
+    }
+    // カンマが来た場合：consume comma, then process parameter
+    [#(tokenizer.Symbol, ","), ..more] -> {
+      let acc2 =
+        list.append(acc, [
+          tokenizer.add_xml_with_symbol(#(tokenizer.Symbol, ","), table, False),
+        ])
+      process_params(more, table, acc2)
+    }
+    // パラメータ: type_token, identifier_token, then続く
+    [type_token, identifier_token, ..more] -> {
+      let new_table =
         symbol_table.define(
-          sub_sym_table,
+          table,
           identifier_token.1,
           type_token.1,
           symbol_table.Argument,
         )
-      let sub_kw = case tokens {
-        [#(tokenizer.Keyword, kw), ..] -> kw
-        _ -> "unknown"
-      }
-      let xmls = [
-        tokenizer.add_xml_with_symbol(
-          #(tokenizer.Keyword, sub_kw),
-          sym_table,
-          False,
-        ),
-        tokenizer.add_xml_with_symbol(return_type, sym_table, False),
-        tokenizer.add_xml_with_symbol(subroutine_name, sub_sym_table, True),
-        tokenizer.add_xml_with_symbol(open_paren, sub_sym_table, False),
-        tokenizer.add_xml_with_symbol(type_token, sub_sym_table, False),
-        tokenizer.add_xml_with_symbol(identifier_token, new_sym_table, True),
-        tokenizer.add_xml_with_symbol(close_paren, new_sym_table, False),
-      ]
-      #(new_sym_table, xmls, rest)
+      let acc2 =
+        list.append(acc, [
+          tokenizer.add_xml_with_symbol(type_token, table, False),
+          tokenizer.add_xml_with_symbol(identifier_token, new_table, True),
+        ])
+      process_params(more, new_table, acc2)
     }
-    // パラメータがない場合：
-    // (constructor|function|method) return_type subroutineName "(" ")" ...
-    [
-      #(tokenizer.Keyword, "constructor"),
-      return_type,
-      subroutine_name,
-      open_paren,
-      close_paren,
-      ..rest
-    ]
-    | [
-        #(tokenizer.Keyword, "function"),
-        return_type,
-        subroutine_name,
-        open_paren,
-        close_paren,
-        ..rest
-      ]
-    | [
-        #(tokenizer.Keyword, "method"),
-        return_type,
-        subroutine_name,
-        open_paren,
-        close_paren,
-        ..rest
-      ] -> {
-      let sub_sym_table = symbol_table.start_subroutine(sym_table)
-      let sub_kw = case tokens {
-        [#(tokenizer.Keyword, kw), ..] -> kw
-        _ -> "unknown"
-      }
-      let xmls = [
-        tokenizer.add_xml_with_symbol(
-          #(tokenizer.Keyword, sub_kw),
-          sym_table,
-          False,
-        ),
-        tokenizer.add_xml_with_symbol(return_type, sym_table, False),
-        tokenizer.add_xml_with_symbol(subroutine_name, sub_sym_table, True),
-        tokenizer.add_xml_with_symbol(open_paren, sub_sym_table, False),
-        tokenizer.add_xml_with_symbol(close_paren, sub_sym_table, False),
-      ]
-      #(sub_sym_table, xmls, rest)
-    }
-    _ -> #(sym_table, [], tokens)
+    _ -> #(table, acc, tokens)
   }
 }
