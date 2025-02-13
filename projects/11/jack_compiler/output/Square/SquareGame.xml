@@ -1,0 +1,315 @@
+<tokens>
+<keyword> class </keyword>
+<identifier name="SquareGame" kind="class" index="-1" use="used"> SquareGame </identifier>
+<symbol> { </symbol>
+<keyword> field </keyword>
+<identifier name="Square" kind="class" index="-1" use="used"> Square </identifier>
+<identifier name="square" kind="field" index="0" use="declared"> square </identifier>
+<symbol> ; </symbol>
+<keyword> field </keyword>
+<keyword> int </keyword>
+<identifier name="direction" kind="field" index="1" use="declared"> direction </identifier>
+<symbol> ; </symbol>
+<keyword> constructor </keyword>
+<identifier name="SquareGame" kind="class" index="-1" use="used"> SquareGame </identifier>
+<identifier name="new" kind="class" index="-1" use="declared"> new </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier name="square" kind="field" index="0" use="used"> square </identifier>
+<symbol> = </symbol>
+<identifier name="Square" kind="class" index="-1" use="used"> Square </identifier>
+<symbol> . </symbol>
+<identifier name="new" kind="class" index="-1" use="used"> new </identifier>
+<symbol> ( </symbol>
+<integerConstant> 0 </integerConstant>
+<symbol> , </symbol>
+<integerConstant> 0 </integerConstant>
+<symbol> , </symbol>
+<integerConstant> 30 </integerConstant>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="direction" kind="field" index="1" use="used"> direction </identifier>
+<symbol> = </symbol>
+<integerConstant> 0 </integerConstant>
+<symbol> ; </symbol>
+<keyword> return </keyword>
+<keyword> this </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier name="dispose" kind="class" index="-1" use="declared"> dispose </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier name="square" kind="field" index="0" use="used"> square </identifier>
+<symbol> . </symbol>
+<identifier name="dispose" kind="class" index="-1" use="used"> dispose </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="Memory" kind="class" index="-1" use="used"> Memory </identifier>
+<symbol> . </symbol>
+<identifier name="deAlloc" kind="class" index="-1" use="used"> deAlloc </identifier>
+<symbol> ( </symbol>
+<keyword> this </keyword>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier name="moveSquare" kind="class" index="-1" use="declared"> moveSquare </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier name="direction" kind="field" index="1" use="used"> direction </identifier>
+<symbol> = </symbol>
+<integerConstant> 1 </integerConstant>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier name="square" kind="field" index="0" use="used"> square </identifier>
+<symbol> . </symbol>
+<identifier name="moveUp" kind="class" index="-1" use="used"> moveUp </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier name="direction" kind="field" index="1" use="used"> direction </identifier>
+<symbol> = </symbol>
+<integerConstant> 2 </integerConstant>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier name="square" kind="field" index="0" use="used"> square </identifier>
+<symbol> . </symbol>
+<identifier name="moveDown" kind="class" index="-1" use="used"> moveDown </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier name="direction" kind="field" index="1" use="used"> direction </identifier>
+<symbol> = </symbol>
+<integerConstant> 3 </integerConstant>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier name="square" kind="field" index="0" use="used"> square </identifier>
+<symbol> . </symbol>
+<identifier name="moveLeft" kind="class" index="-1" use="used"> moveLeft </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier name="direction" kind="field" index="1" use="used"> direction </identifier>
+<symbol> = </symbol>
+<integerConstant> 4 </integerConstant>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier name="square" kind="field" index="0" use="used"> square </identifier>
+<symbol> . </symbol>
+<identifier name="moveRight" kind="class" index="-1" use="used"> moveRight </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> do </keyword>
+<identifier name="Sys" kind="class" index="-1" use="used"> Sys </identifier>
+<symbol> . </symbol>
+<identifier name="wait" kind="class" index="-1" use="used"> wait </identifier>
+<symbol> ( </symbol>
+<integerConstant> 5 </integerConstant>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier name="run" kind="class" index="-1" use="declared"> run </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> var </keyword>
+<keyword> char </keyword>
+<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<symbol> ; </symbol>
+<keyword> var </keyword>
+<keyword> boolean </keyword>
+<identifier name="exit" kind="var" index="0" use="declared"> exit </identifier>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="exit" kind="var" index="0" use="used"> exit </identifier>
+<symbol> = </symbol>
+<keyword> false </keyword>
+<symbol> ; </symbol>
+<keyword> while </keyword>
+<symbol> ( </symbol>
+<symbol> ~ </symbol>
+<identifier name="exit" kind="var" index="0" use="used"> exit </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> while </keyword>
+<symbol> ( </symbol>
+<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<symbol> = </symbol>
+<integerConstant> 0 </integerConstant>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<symbol> = </symbol>
+<identifier name="Keyboard" kind="class" index="-1" use="used"> Keyboard </identifier>
+<symbol> . </symbol>
+<identifier name="keyPressed" kind="class" index="-1" use="used"> keyPressed </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="moveSquare" kind="class" index="-1" use="used"> moveSquare </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<symbol> = </symbol>
+<integerConstant> 81 </integerConstant>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier name="exit" kind="var" index="0" use="used"> exit </identifier>
+<symbol> = </symbol>
+<keyword> true </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<symbol> = </symbol>
+<integerConstant> 90 </integerConstant>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier name="square" kind="field" index="0" use="used"> square </identifier>
+<symbol> . </symbol>
+<identifier name="decSize" kind="class" index="-1" use="used"> decSize </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<symbol> = </symbol>
+<integerConstant> 88 </integerConstant>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier name="square" kind="field" index="0" use="used"> square </identifier>
+<symbol> . </symbol>
+<identifier name="incSize" kind="class" index="-1" use="used"> incSize </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<symbol> = </symbol>
+<integerConstant> 131 </integerConstant>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier name="direction" kind="field" index="1" use="used"> direction </identifier>
+<symbol> = </symbol>
+<integerConstant> 1 </integerConstant>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<symbol> = </symbol>
+<integerConstant> 133 </integerConstant>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier name="direction" kind="field" index="1" use="used"> direction </identifier>
+<symbol> = </symbol>
+<integerConstant> 2 </integerConstant>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<symbol> = </symbol>
+<integerConstant> 130 </integerConstant>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier name="direction" kind="field" index="1" use="used"> direction </identifier>
+<symbol> = </symbol>
+<integerConstant> 3 </integerConstant>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<symbol> = </symbol>
+<integerConstant> 132 </integerConstant>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier name="direction" kind="field" index="1" use="used"> direction </identifier>
+<symbol> = </symbol>
+<integerConstant> 4 </integerConstant>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> while </keyword>
+<symbol> ( </symbol>
+<symbol> ~ </symbol>
+<symbol> ( </symbol>
+<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<symbol> = </symbol>
+<integerConstant> 0 </integerConstant>
+<symbol> ) </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<symbol> = </symbol>
+<identifier name="Keyboard" kind="class" index="-1" use="used"> Keyboard </identifier>
+<symbol> . </symbol>
+<identifier name="keyPressed" kind="class" index="-1" use="used"> keyPressed </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="moveSquare" kind="class" index="-1" use="used"> moveSquare </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<symbol> } </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<symbol> } </symbol>
+</tokens>

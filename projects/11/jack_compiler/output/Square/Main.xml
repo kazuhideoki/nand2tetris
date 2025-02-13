@@ -1,0 +1,126 @@
+<tokens>
+<keyword> class </keyword>
+<identifier name="Main" kind="class" index="-1" use="used"> Main </identifier>
+<symbol> { </symbol>
+<keyword> static </keyword>
+<keyword> boolean </keyword>
+<identifier name="test" kind="static" index="0" use="declared"> test </identifier>
+<symbol> ; </symbol>
+<keyword> function </keyword>
+<keyword> void </keyword>
+<identifier name="main" kind="class" index="-1" use="declared"> main </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> var </keyword>
+<identifier name="SquareGame" kind="class" index="-1" use="used"> SquareGame </identifier>
+<identifier name="game" kind="class" index="-1" use="used"> game </identifier>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="game" kind="class" index="-1" use="used"> game </identifier>
+<symbol> = </symbol>
+<identifier name="SquareGame" kind="class" index="-1" use="used"> SquareGame </identifier>
+<symbol> . </symbol>
+<identifier name="new" kind="class" index="-1" use="used"> new </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="game" kind="class" index="-1" use="used"> game </identifier>
+<symbol> . </symbol>
+<identifier name="run" kind="class" index="-1" use="used"> run </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="game" kind="class" index="-1" use="used"> game </identifier>
+<symbol> . </symbol>
+<identifier name="dispose" kind="class" index="-1" use="used"> dispose </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> function </keyword>
+<keyword> void </keyword>
+<identifier name="more" kind="class" index="-1" use="declared"> more </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> var </keyword>
+<keyword> int </keyword>
+<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<symbol> , </symbol>
+<identifier name="j" kind="class" index="-1" use="used"> j </identifier>
+<symbol> ; </symbol>
+<keyword> var </keyword>
+<identifier name="String" kind="class" index="-1" use="used"> String </identifier>
+<identifier name="s" kind="var" index="0" use="declared"> s </identifier>
+<symbol> ; </symbol>
+<keyword> var </keyword>
+<identifier name="Array" kind="class" index="-1" use="used"> Array </identifier>
+<identifier name="a" kind="var" index="1" use="declared"> a </identifier>
+<symbol> ; </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<keyword> false </keyword>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier name="s" kind="var" index="0" use="used"> s </identifier>
+<symbol> = </symbol>
+<stringConstant> string constant </stringConstant>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="s" kind="var" index="0" use="used"> s </identifier>
+<symbol> = </symbol>
+<keyword> null </keyword>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="a" kind="var" index="1" use="used"> a </identifier>
+<symbol> [ </symbol>
+<integerConstant> 1 </integerConstant>
+<symbol> ] </symbol>
+<symbol> = </symbol>
+<identifier name="a" kind="var" index="1" use="used"> a </identifier>
+<symbol> [ </symbol>
+<integerConstant> 2 </integerConstant>
+<symbol> ] </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> else </keyword>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<symbol> = </symbol>
+<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<symbol> * </symbol>
+<symbol> ( </symbol>
+<symbol> - </symbol>
+<identifier name="j" kind="class" index="-1" use="used"> j </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="j" kind="class" index="-1" use="used"> j </identifier>
+<symbol> = </symbol>
+<identifier name="j" kind="class" index="-1" use="used"> j </identifier>
+<symbol> / </symbol>
+<symbol> ( </symbol>
+<symbol> - </symbol>
+<integerConstant> 2 </integerConstant>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<symbol> = </symbol>
+<identifier name="i" kind="class" index="-1" use="used"> i </identifier>
+<symbol> | </symbol>
+<identifier name="j" kind="class" index="-1" use="used"> j </identifier>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<symbol> } </symbol>
+</tokens>

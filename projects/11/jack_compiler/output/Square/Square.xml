@@ -1,0 +1,561 @@
+<tokens>
+<keyword> class </keyword>
+<identifier name="Square" kind="class" index="-1" use="used"> Square </identifier>
+<symbol> { </symbol>
+<keyword> field </keyword>
+<keyword> int </keyword>
+<identifier name="x" kind="field" index="0" use="declared"> x </identifier>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> ; </symbol>
+<keyword> field </keyword>
+<keyword> int </keyword>
+<identifier name="size" kind="field" index="1" use="declared"> size </identifier>
+<symbol> ; </symbol>
+<keyword> constructor </keyword>
+<identifier name="Square" kind="class" index="-1" use="used"> Square </identifier>
+<identifier name="new" kind="class" index="-1" use="declared"> new </identifier>
+<symbol> ( </symbol>
+<keyword> int </keyword>
+<identifier name="Ax" kind="arg" index="0" use="declared"> Ax </identifier>
+<symbol> , </symbol>
+<keyword> int </keyword>
+<identifier name="Ay" kind="class" index="-1" use="used"> Ay </identifier>
+<symbol> , </symbol>
+<keyword> int </keyword>
+<identifier name="Asize" kind="class" index="-1" use="used"> Asize </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> = </symbol>
+<identifier name="Ax" kind="arg" index="0" use="used"> Ax </identifier>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> = </symbol>
+<identifier name="Ay" kind="class" index="-1" use="used"> Ay </identifier>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> = </symbol>
+<identifier name="Asize" kind="class" index="-1" use="used"> Asize </identifier>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="draw" kind="class" index="-1" use="used"> draw </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> return </keyword>
+<keyword> this </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier name="dispose" kind="class" index="-1" use="declared"> dispose </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier name="Memory" kind="class" index="-1" use="used"> Memory </identifier>
+<symbol> . </symbol>
+<identifier name="deAlloc" kind="class" index="-1" use="used"> deAlloc </identifier>
+<symbol> ( </symbol>
+<keyword> this </keyword>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier name="draw" kind="class" index="-1" use="declared"> draw </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="setColor" kind="class" index="-1" use="used"> setColor </identifier>
+<symbol> ( </symbol>
+<keyword> true </keyword>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="drawRectangle" kind="class" index="-1" use="used"> drawRectangle </identifier>
+<symbol> ( </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> , </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier name="erase" kind="class" index="-1" use="declared"> erase </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="setColor" kind="class" index="-1" use="used"> setColor </identifier>
+<symbol> ( </symbol>
+<keyword> false </keyword>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="drawRectangle" kind="class" index="-1" use="used"> drawRectangle </identifier>
+<symbol> ( </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> , </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier name="incSize" kind="class" index="-1" use="declared"> incSize </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<symbol> ( </symbol>
+<symbol> ( </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> ) </symbol>
+<symbol> &lt; </symbol>
+<integerConstant> 254 </integerConstant>
+<symbol> ) </symbol>
+<symbol> &amp; </symbol>
+<symbol> ( </symbol>
+<symbol> ( </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> ) </symbol>
+<symbol> &lt; </symbol>
+<integerConstant> 510 </integerConstant>
+<symbol> ) </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier name="erase" kind="class" index="-1" use="used"> erase </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> = </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> + </symbol>
+<integerConstant> 2 </integerConstant>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="draw" kind="class" index="-1" use="used"> draw </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier name="decSize" kind="class" index="-1" use="declared"> decSize </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> &gt; </symbol>
+<integerConstant> 2 </integerConstant>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier name="erase" kind="class" index="-1" use="used"> erase </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> = </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> - </symbol>
+<integerConstant> 2 </integerConstant>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="draw" kind="class" index="-1" use="used"> draw </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier name="moveUp" kind="class" index="-1" use="declared"> moveUp </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> &gt; </symbol>
+<integerConstant> 1 </integerConstant>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="setColor" kind="class" index="-1" use="used"> setColor </identifier>
+<symbol> ( </symbol>
+<keyword> false </keyword>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="drawRectangle" kind="class" index="-1" use="used"> drawRectangle </identifier>
+<symbol> ( </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> , </symbol>
+<symbol> ( </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> ) </symbol>
+<symbol> - </symbol>
+<integerConstant> 1 </integerConstant>
+<symbol> , </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> = </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> - </symbol>
+<integerConstant> 2 </integerConstant>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="setColor" kind="class" index="-1" use="used"> setColor </identifier>
+<symbol> ( </symbol>
+<keyword> true </keyword>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="drawRectangle" kind="class" index="-1" use="used"> drawRectangle </identifier>
+<symbol> ( </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> , </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> + </symbol>
+<integerConstant> 1 </integerConstant>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier name="moveDown" kind="class" index="-1" use="declared"> moveDown </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<symbol> ( </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> ) </symbol>
+<symbol> &lt; </symbol>
+<integerConstant> 254 </integerConstant>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="setColor" kind="class" index="-1" use="used"> setColor </identifier>
+<symbol> ( </symbol>
+<keyword> false </keyword>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="drawRectangle" kind="class" index="-1" use="used"> drawRectangle </identifier>
+<symbol> ( </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> , </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> + </symbol>
+<integerConstant> 1 </integerConstant>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> = </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> + </symbol>
+<integerConstant> 2 </integerConstant>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="setColor" kind="class" index="-1" use="used"> setColor </identifier>
+<symbol> ( </symbol>
+<keyword> true </keyword>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="drawRectangle" kind="class" index="-1" use="used"> drawRectangle </identifier>
+<symbol> ( </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> , </symbol>
+<symbol> ( </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> ) </symbol>
+<symbol> - </symbol>
+<integerConstant> 1 </integerConstant>
+<symbol> , </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier name="moveLeft" kind="class" index="-1" use="declared"> moveLeft </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> &gt; </symbol>
+<integerConstant> 1 </integerConstant>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="setColor" kind="class" index="-1" use="used"> setColor </identifier>
+<symbol> ( </symbol>
+<keyword> false </keyword>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="drawRectangle" kind="class" index="-1" use="used"> drawRectangle </identifier>
+<symbol> ( </symbol>
+<symbol> ( </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> ) </symbol>
+<symbol> - </symbol>
+<integerConstant> 1 </integerConstant>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> , </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> = </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> - </symbol>
+<integerConstant> 2 </integerConstant>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="setColor" kind="class" index="-1" use="used"> setColor </identifier>
+<symbol> ( </symbol>
+<keyword> true </keyword>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="drawRectangle" kind="class" index="-1" use="used"> drawRectangle </identifier>
+<symbol> ( </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> , </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> + </symbol>
+<integerConstant> 1 </integerConstant>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier name="moveRight" kind="class" index="-1" use="declared"> moveRight </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<symbol> ( </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> ) </symbol>
+<symbol> &lt; </symbol>
+<integerConstant> 510 </integerConstant>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="setColor" kind="class" index="-1" use="used"> setColor </identifier>
+<symbol> ( </symbol>
+<keyword> false </keyword>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="drawRectangle" kind="class" index="-1" use="used"> drawRectangle </identifier>
+<symbol> ( </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> , </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> + </symbol>
+<integerConstant> 1 </integerConstant>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> = </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> + </symbol>
+<integerConstant> 2 </integerConstant>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="setColor" kind="class" index="-1" use="used"> setColor </identifier>
+<symbol> ( </symbol>
+<keyword> true </keyword>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier name="Screen" kind="class" index="-1" use="used"> Screen </identifier>
+<symbol> . </symbol>
+<identifier name="drawRectangle" kind="class" index="-1" use="used"> drawRectangle </identifier>
+<symbol> ( </symbol>
+<symbol> ( </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> ) </symbol>
+<symbol> - </symbol>
+<integerConstant> 1 </integerConstant>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> , </symbol>
+<identifier name="x" kind="field" index="0" use="used"> x </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> , </symbol>
+<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<symbol> + </symbol>
+<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<symbol> } </symbol>
+</tokens>

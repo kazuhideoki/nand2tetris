@@ -10,24 +10,66 @@ import symbol_table
 import tokenizer
 
 pub fn main() {
-  // コマンドライン引数から入力ファイルを読み込む
-  use raw_string <- result.try(argv.load().arguments |> parser.get_raw_string)
+  let args = argv.load().arguments
+  case args {
+    [path, ..] -> compile_path(path)
+    _ -> Ok(Nil)
+  }
+}
 
-  // 入力文字列をトークンに分解する
+/// path がディレクトリなら、そのディレクトリ内の .jack ファイルをすべてコンパイルし、
+/// 出力は output/<ディレクトリ名>/ に <ファイル名>.xml として出力する。
+/// そうでなければ、単一ファイルとして output/ に出力する。
+fn compile_path(path: String) -> Result(Nil, Nil) {
+  case simplifile.is_directory(path) {
+    Ok(True) -> {
+      let assert Ok(files) = simplifile.read_directory(path)
+      let jack_files =
+        list.filter(files, fn(file) { string.ends_with(file, ".jack") })
+      let dir_basename = basename(path)
+      let output_dir = "output" <> "/" <> dir_basename
+      let _ = simplifile.create_directory(output_dir)
+      list.each(jack_files, fn(file) {
+        // フルパスは "ディレクトリ/ファイル名" とする
+        let full_path = path <> "/" <> file
+        compile_file(full_path, output_dir)
+      })
+      Ok(Nil)
+    }
+    _ -> compile_file(path, "output")
+  }
+}
+
+/// 単一の jack ファイルをコンパイルして、output_dir/<ファイル名>.xml に出力する
+fn compile_file(path: String, output_dir: String) -> Result(Nil, Nil) {
+  use raw_string <- result.try(parser.get_raw_string(path))
   let tokens = tokenizer.tokenize(raw_string)
-
-  // 新規シンボルテーブルを作成する
   let sym_table = symbol_table.new_symbol_table()
-
-  // tokens を再帰的に処理してシンボルテーブル更新＆XML用文字列リストを生成
   let #(final_sym_table, xml_tokens) = process_tokens(tokens, sym_table)
-
   let xml = "<tokens>\n" <> string.join(xml_tokens, "\n") <> "\n</tokens>"
-
-  // 出力先へ書き込む
-  let _ = simplifile.write("output/Output.xml", xml)
-
+  let file_basename = basename(path)
+  let output_file =
+    output_dir <> "/" <> replace_extension(file_basename, ".xml")
+  let _ = simplifile.write(output_file, xml)
   Ok(Nil)
+}
+
+/// 拡張子 ".jack" を検出して new_ext に置換する。
+fn replace_extension(file_path: String, new_ext: String) -> String {
+  case string.ends_with(file_path, ".jack") {
+    True -> {
+      let base = string.slice(file_path, 0, string.length(file_path) - 5)
+      base <> new_ext
+    }
+    False -> file_path <> new_ext
+  }
+}
+
+/// パス文字列の最後の "/" 以降の部分（basename）を返す。
+fn basename(path: String) -> String {
+  let parts = string.split(path, "/")
+  list.last(parts)
+  |> result.unwrap(path)
 }
 
 /// トークン列を先頭から走査して、宣言箇所ならシンボルテーブル更新＆XML文字列を生成する
