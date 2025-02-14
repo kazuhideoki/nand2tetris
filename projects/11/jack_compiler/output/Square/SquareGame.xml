@@ -148,32 +148,32 @@
 <symbol> { </symbol>
 <keyword> var </keyword>
 <keyword> char </keyword>
-<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<identifier name="key" kind="var" index="0" use="declared"> key </identifier>
 <symbol> ; </symbol>
 <keyword> var </keyword>
 <keyword> boolean </keyword>
-<identifier name="exit" kind="var" index="0" use="declared"> exit </identifier>
+<identifier name="exit" kind="var" index="1" use="declared"> exit </identifier>
 <symbol> ; </symbol>
 <keyword> let </keyword>
-<identifier name="exit" kind="var" index="0" use="used"> exit </identifier>
+<identifier name="exit" kind="var" index="1" use="used"> exit </identifier>
 <symbol> = </symbol>
 <keyword> false </keyword>
 <symbol> ; </symbol>
 <keyword> while </keyword>
 <symbol> ( </symbol>
 <symbol> ~ </symbol>
-<identifier name="exit" kind="var" index="0" use="used"> exit </identifier>
+<identifier name="exit" kind="var" index="1" use="used"> exit </identifier>
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <keyword> while </keyword>
 <symbol> ( </symbol>
-<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<identifier name="key" kind="var" index="0" use="used"> key </identifier>
 <symbol> = </symbol>
 <integerConstant> 0 </integerConstant>
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <keyword> let </keyword>
-<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<identifier name="key" kind="var" index="0" use="used"> key </identifier>
 <symbol> = </symbol>
 <identifier name="Keyboard" kind="class" index="-1" use="used"> Keyboard </identifier>
 <symbol> . </symbol>
@@ -189,20 +189,20 @@
 <symbol> } </symbol>
 <keyword> if </keyword>
 <symbol> ( </symbol>
-<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<identifier name="key" kind="var" index="0" use="used"> key </identifier>
 <symbol> = </symbol>
 <integerConstant> 81 </integerConstant>
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <keyword> let </keyword>
-<identifier name="exit" kind="var" index="0" use="used"> exit </identifier>
+<identifier name="exit" kind="var" index="1" use="used"> exit </identifier>
 <symbol> = </symbol>
 <keyword> true </keyword>
 <symbol> ; </symbol>
 <symbol> } </symbol>
 <keyword> if </keyword>
 <symbol> ( </symbol>
-<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<identifier name="key" kind="var" index="0" use="used"> key </identifier>
 <symbol> = </symbol>
 <integerConstant> 90 </integerConstant>
 <symbol> ) </symbol>
@@ -217,7 +217,7 @@
 <symbol> } </symbol>
 <keyword> if </keyword>
 <symbol> ( </symbol>
-<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<identifier name="key" kind="var" index="0" use="used"> key </identifier>
 <symbol> = </symbol>
 <integerConstant> 88 </integerConstant>
 <symbol> ) </symbol>
@@ -232,7 +232,7 @@
 <symbol> } </symbol>
 <keyword> if </keyword>
 <symbol> ( </symbol>
-<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<identifier name="key" kind="var" index="0" use="used"> key </identifier>
 <symbol> = </symbol>
 <integerConstant> 131 </integerConstant>
 <symbol> ) </symbol>
@@ -245,7 +245,7 @@
 <symbol> } </symbol>
 <keyword> if </keyword>
 <symbol> ( </symbol>
-<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<identifier name="key" kind="var" index="0" use="used"> key </identifier>
 <symbol> = </symbol>
 <integerConstant> 133 </integerConstant>
 <symbol> ) </symbol>
@@ -258,7 +258,7 @@
 <symbol> } </symbol>
 <keyword> if </keyword>
 <symbol> ( </symbol>
-<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<identifier name="key" kind="var" index="0" use="used"> key </identifier>
 <symbol> = </symbol>
 <integerConstant> 130 </integerConstant>
 <symbol> ) </symbol>
@@ -271,7 +271,7 @@
 <symbol> } </symbol>
 <keyword> if </keyword>
 <symbol> ( </symbol>
-<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<identifier name="key" kind="var" index="0" use="used"> key </identifier>
 <symbol> = </symbol>
 <integerConstant> 132 </integerConstant>
 <symbol> ) </symbol>
@@ -286,14 +286,14 @@
 <symbol> ( </symbol>
 <symbol> ~ </symbol>
 <symbol> ( </symbol>
-<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<identifier name="key" kind="var" index="0" use="used"> key </identifier>
 <symbol> = </symbol>
 <integerConstant> 0 </integerConstant>
 <symbol> ) </symbol>
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <keyword> let </keyword>
-<identifier name="key" kind="class" index="-1" use="used"> key </identifier>
+<identifier name="key" kind="var" index="0" use="used"> key </identifier>
 <symbol> = </symbol>
 <identifier name="Keyboard" kind="class" index="-1" use="used"> Keyboard </identifier>
 <symbol> . </symbol>

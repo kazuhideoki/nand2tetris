@@ -6,11 +6,11 @@
 <keyword> int </keyword>
 <identifier name="x" kind="field" index="0" use="declared"> x </identifier>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="declared"> y </identifier>
 <symbol> ; </symbol>
 <keyword> field </keyword>
 <keyword> int </keyword>
-<identifier name="size" kind="field" index="1" use="declared"> size </identifier>
+<identifier name="size" kind="field" index="2" use="declared"> size </identifier>
 <symbol> ; </symbol>
 <keyword> constructor </keyword>
 <identifier name="Square" kind="class" index="-1" use="used"> Square </identifier>
@@ -20,10 +20,10 @@
 <identifier name="Ax" kind="arg" index="0" use="declared"> Ax </identifier>
 <symbol> , </symbol>
 <keyword> int </keyword>
-<identifier name="Ay" kind="class" index="-1" use="used"> Ay </identifier>
+<identifier name="Ay" kind="arg" index="1" use="declared"> Ay </identifier>
 <symbol> , </symbol>
 <keyword> int </keyword>
-<identifier name="Asize" kind="class" index="-1" use="used"> Asize </identifier>
+<identifier name="Asize" kind="arg" index="2" use="declared"> Asize </identifier>
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <keyword> let </keyword>
@@ -32,14 +32,14 @@
 <identifier name="Ax" kind="arg" index="0" use="used"> Ax </identifier>
 <symbol> ; </symbol>
 <keyword> let </keyword>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> = </symbol>
-<identifier name="Ay" kind="class" index="-1" use="used"> Ay </identifier>
+<identifier name="Ay" kind="arg" index="1" use="used"> Ay </identifier>
 <symbol> ; </symbol>
 <keyword> let </keyword>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> = </symbol>
-<identifier name="Asize" kind="class" index="-1" use="used"> Asize </identifier>
+<identifier name="Asize" kind="arg" index="2" use="used"> Asize </identifier>
 <symbol> ; </symbol>
 <keyword> do </keyword>
 <identifier name="draw" kind="class" index="-1" use="used"> draw </identifier>
@@ -88,15 +88,15 @@
 <symbol> ( </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> , </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 <keyword> return </keyword>
@@ -123,15 +123,15 @@
 <symbol> ( </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> , </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 <keyword> return </keyword>
@@ -147,9 +147,9 @@
 <symbol> ( </symbol>
 <symbol> ( </symbol>
 <symbol> ( </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> ) </symbol>
 <symbol> &lt; </symbol>
 <integerConstant> 254 </integerConstant>
@@ -159,7 +159,7 @@
 <symbol> ( </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> ) </symbol>
 <symbol> &lt; </symbol>
 <integerConstant> 510 </integerConstant>
@@ -172,9 +172,9 @@
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 <keyword> let </keyword>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> = </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> + </symbol>
 <integerConstant> 2 </integerConstant>
 <symbol> ; </symbol>
@@ -195,7 +195,7 @@
 <symbol> { </symbol>
 <keyword> if </keyword>
 <symbol> ( </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> &gt; </symbol>
 <integerConstant> 2 </integerConstant>
 <symbol> ) </symbol>
@@ -206,9 +206,9 @@
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 <keyword> let </keyword>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> = </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> - </symbol>
 <integerConstant> 2 </integerConstant>
 <symbol> ; </symbol>
@@ -229,7 +229,7 @@
 <symbol> { </symbol>
 <keyword> if </keyword>
 <symbol> ( </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> &gt; </symbol>
 <integerConstant> 1 </integerConstant>
 <symbol> ) </symbol>
@@ -250,26 +250,26 @@
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> , </symbol>
 <symbol> ( </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> ) </symbol>
 <symbol> - </symbol>
 <integerConstant> 1 </integerConstant>
 <symbol> , </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 <keyword> let </keyword>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> = </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> - </symbol>
 <integerConstant> 2 </integerConstant>
 <symbol> ; </symbol>
@@ -288,13 +288,13 @@
 <symbol> ( </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> , </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> + </symbol>
 <integerConstant> 1 </integerConstant>
 <symbol> ) </symbol>
@@ -312,9 +312,9 @@
 <keyword> if </keyword>
 <symbol> ( </symbol>
 <symbol> ( </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> ) </symbol>
 <symbol> &lt; </symbol>
 <integerConstant> 254 </integerConstant>
@@ -335,21 +335,21 @@
 <symbol> ( </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> , </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> + </symbol>
 <integerConstant> 1 </integerConstant>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 <keyword> let </keyword>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> = </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> + </symbol>
 <integerConstant> 2 </integerConstant>
 <symbol> ; </symbol>
@@ -369,20 +369,20 @@
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> , </symbol>
 <symbol> ( </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> ) </symbol>
 <symbol> - </symbol>
 <integerConstant> 1 </integerConstant>
 <symbol> , </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 <symbol> } </symbol>
@@ -418,20 +418,20 @@
 <symbol> ( </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> ) </symbol>
 <symbol> - </symbol>
 <integerConstant> 1 </integerConstant>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> , </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 <keyword> let </keyword>
@@ -456,15 +456,15 @@
 <symbol> ( </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> , </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> + </symbol>
 <integerConstant> 1 </integerConstant>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 <symbol> } </symbol>
@@ -482,7 +482,7 @@
 <symbol> ( </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> ) </symbol>
 <symbol> &lt; </symbol>
 <integerConstant> 510 </integerConstant>
@@ -503,15 +503,15 @@
 <symbol> ( </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> , </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> + </symbol>
 <integerConstant> 1 </integerConstant>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 <keyword> let </keyword>
@@ -537,20 +537,20 @@
 <symbol> ( </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> ) </symbol>
 <symbol> - </symbol>
 <integerConstant> 1 </integerConstant>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> , </symbol>
 <identifier name="x" kind="field" index="0" use="used"> x </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> , </symbol>
-<identifier name="y" kind="class" index="-1" use="used"> y </identifier>
+<identifier name="y" kind="field" index="1" use="used"> y </identifier>
 <symbol> + </symbol>
-<identifier name="size" kind="field" index="1" use="used"> size </identifier>
+<identifier name="size" kind="field" index="2" use="used"> size </identifier>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 <symbol> } </symbol>
