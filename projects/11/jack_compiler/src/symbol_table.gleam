@@ -8,51 +8,48 @@ pub type Kind {
   Argument
   Var
   NoneKind
-  // 該当なし
 }
 
 /// 識別子（シンボル）の情報。型名（symbol_type）、属性（kind）、および実行時のインデックスを保持する。
 pub type Symbol =
   #(String, Kind, Int)
 
-// シンボルテーブルは、クラススコープとサブルーチンスコープで別々に識別子を管理するので、それぞれのマップと
-// 各属性ごとのカウンタを保持する。
 pub type SymbolTable {
   SymbolTable(
+    /// クラススコープのシンボルを保持するマップ
     class_scope: Dict(String, Symbol),
+    /// サブルーチンスコープのシンボルを保持するマップ
     subroutine_scope: Dict(String, Symbol),
+    /// 静的変数のカウンタ
     static_count: Int,
+    /// フィールド変数のカウンタ
     field_count: Int,
+    /// 引数のカウンタ
     argument_count: Int,
+    /// ローカル変数のカウンタ
     var_count: Int,
   )
 }
 
 pub fn new_symbol_table() -> SymbolTable {
   SymbolTable(
-    dict.new(),
-    dict.new(),
-    0,
-    // static_count
-    0,
-    // field_count
-    0,
-    // argument_count
-    0,
-    // var_count
+    class_scope: dict.new(),
+    subroutine_scope: dict.new(),
+    static_count: 0,
+    field_count: 0,
+    argument_count: 0,
+    var_count: 0,
   )
 }
 
 pub fn start_subroutine(table: SymbolTable) -> SymbolTable {
   SymbolTable(
-    table.class_scope,
-    dict.new(),
-    table.static_count,
-    table.field_count,
-    0,
-    // reset argument_count
-    0,
-    // reset var_count
+    class_scope: table.class_scope,
+    subroutine_scope: dict.new(),
+    static_count: table.static_count,
+    field_count: table.field_count,
+    argument_count: 0,
+    var_count: 0,
   )
 }
 
@@ -68,12 +65,12 @@ pub fn define(
       let new_class =
         dict.insert(table.class_scope, name, #(symbol_type, kind, new_index))
       SymbolTable(
-        new_class,
-        table.subroutine_scope,
-        new_index + 1,
-        table.field_count,
-        table.argument_count,
-        table.var_count,
+        class_scope: new_class,
+        subroutine_scope: table.subroutine_scope,
+        static_count: new_index + 1,
+        field_count: table.field_count,
+        argument_count: table.argument_count,
+        var_count: table.var_count,
       )
     }
     Field -> {
@@ -81,12 +78,12 @@ pub fn define(
       let new_class =
         dict.insert(table.class_scope, name, #(symbol_type, kind, new_index))
       SymbolTable(
-        new_class,
-        table.subroutine_scope,
-        table.static_count,
-        new_index + 1,
-        table.argument_count,
-        table.var_count,
+        class_scope: new_class,
+        subroutine_scope: table.subroutine_scope,
+        static_count: table.static_count,
+        field_count: new_index + 1,
+        argument_count: table.argument_count,
+        var_count: table.var_count,
       )
     }
     Argument -> {
@@ -98,12 +95,12 @@ pub fn define(
           new_index,
         ))
       SymbolTable(
-        table.class_scope,
-        new_sub,
-        table.static_count,
-        table.field_count,
-        new_index + 1,
-        table.var_count,
+        class_scope: table.class_scope,
+        subroutine_scope: new_sub,
+        static_count: table.static_count,
+        field_count: table.field_count,
+        argument_count: new_index + 1,
+        var_count: table.var_count,
       )
     }
     Var -> {
@@ -115,18 +112,19 @@ pub fn define(
           new_index,
         ))
       SymbolTable(
-        table.class_scope,
-        new_sub,
-        table.static_count,
-        table.field_count,
-        table.argument_count,
-        new_index + 1,
+        class_scope: table.class_scope,
+        subroutine_scope: new_sub,
+        static_count: table.static_count,
+        field_count: table.field_count,
+        argument_count: table.argument_count,
+        var_count: new_index + 1,
       )
     }
     NoneKind -> table
   }
 }
 
+/// シンボルテーブルから識別子を検索する
 pub fn lookup(table: SymbolTable, name: String) -> Option(Symbol) {
   case dict.get(table.subroutine_scope, name) {
     Ok(symbol) -> Some(symbol)

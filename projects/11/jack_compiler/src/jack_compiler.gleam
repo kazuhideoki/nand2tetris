@@ -75,7 +75,12 @@ fn process_tokens(
         }
         // それ以外は「使用」としてそのままXML出力
         _ -> {
-          let xml = tokenizer.add_xml_with_symbol(token, sym_table, False)
+          let xml =
+            tokenizer.add_xml_with_symbol(
+              token: token,
+              table: sym_table,
+              is_declaration: False,
+            )
           let #(new_sym_table, xml_rest) = process_tokens(rest, sym_table)
           #(new_sym_table, list.append([xml], xml_rest))
         }
@@ -106,47 +111,79 @@ fn process_class_var_dec(
         )
       let xmls = [
         tokenizer.add_xml_with_symbol(
-          #(tokenizer.Keyword, kind),
-          sym_table,
-          False,
+          token: #(tokenizer.Keyword, kind),
+          table: sym_table,
+          is_declaration: False,
         ),
-        tokenizer.add_xml_with_symbol(type_token, sym_table, False),
-        tokenizer.add_xml_with_symbol(identifier_token, new_sym_table, True),
+        tokenizer.add_xml_with_symbol(
+          token: type_token,
+          table: sym_table,
+          is_declaration: False,
+        ),
+        tokenizer.add_xml_with_symbol(
+          token: identifier_token,
+          table: new_sym_table,
+          is_declaration: True,
+        ),
       ]
-      // カンマ区切りの追加識別子およびセミコロンまで処理するローカル関数
 
-      process_rest1(type_token, symbol_kind, rest, new_sym_table, xmls)
+      // カンマ区切りの追加識別子およびセミコロンまで処理するローカル関数
+      process_class_var_dec_rest(
+        type_token:,
+        symbol_kind:,
+        tokens: rest,
+        table: new_sym_table,
+        xmls:,
+      )
     }
     _ -> #(sym_table, [], tokens)
   }
 }
 
-fn process_rest1(
-  type_token: tokenizer.Token,
-  symbol_kind: symbol_table.Kind,
-  tokens: List(tokenizer.Token),
-  table: symbol_table.SymbolTable,
-  acc: List(String),
+fn process_class_var_dec_rest(
+  type_token type_token: tokenizer.Token,
+  symbol_kind symbol_kind: symbol_table.Kind,
+  tokens tokens: List(tokenizer.Token),
+  table table: symbol_table.SymbolTable,
+  xmls xmls: List(String),
 ) -> #(symbol_table.SymbolTable, List(String), List(tokenizer.Token)) {
   case tokens {
-    [#(tokenizer.Symbol, ","), next_id, ..more] -> {
+    [#(tokenizer.Symbol, ","), next_id, ..rest_tokens] -> {
       let new_table =
         symbol_table.define(table, next_id.1, type_token.1, symbol_kind)
-      let acc2 =
-        list.append(acc, [
-          tokenizer.add_xml_with_symbol(#(tokenizer.Symbol, ","), table, False),
-          tokenizer.add_xml_with_symbol(next_id, new_table, True),
+      let new_xmls =
+        list.append(xmls, [
+          tokenizer.add_xml_with_symbol(
+            token: #(tokenizer.Symbol, ","),
+            table: table,
+            is_declaration: False,
+          ),
+          tokenizer.add_xml_with_symbol(
+            token: next_id,
+            table: new_table,
+            is_declaration: True,
+          ),
         ])
-      process_rest1(type_token, symbol_kind, more, new_table, acc2)
+      process_class_var_dec_rest(
+        type_token:,
+        symbol_kind:,
+        tokens: rest_tokens,
+        table: new_table,
+        xmls: new_xmls,
+      )
     }
-    [#(tokenizer.Symbol, ";"), ..more] -> {
+    [#(tokenizer.Symbol, ";"), ..rest_tokens] -> {
       let acc2 =
-        list.append(acc, [
-          tokenizer.add_xml_with_symbol(#(tokenizer.Symbol, ";"), table, False),
+        list.append(xmls, [
+          tokenizer.add_xml_with_symbol(
+            token: #(tokenizer.Symbol, ";"),
+            table: table,
+            is_declaration: False,
+          ),
         ])
-      #(table, acc2, more)
+      #(table, acc2, rest_tokens)
     }
-    _ -> #(table, acc, tokens)
+    _ -> #(table, xmls, tokens)
   }
 }
 
@@ -167,45 +204,75 @@ fn process_var_dec(
         )
       let xmls = [
         tokenizer.add_xml_with_symbol(
-          #(tokenizer.Keyword, "var"),
-          sym_table,
-          False,
+          token: #(tokenizer.Keyword, "var"),
+          table: sym_table,
+          is_declaration: False,
         ),
-        tokenizer.add_xml_with_symbol(type_token, sym_table, False),
-        tokenizer.add_xml_with_symbol(identifier_token, new_sym_table, True),
+        tokenizer.add_xml_with_symbol(
+          token: type_token,
+          table: sym_table,
+          is_declaration: False,
+        ),
+        tokenizer.add_xml_with_symbol(
+          token: identifier_token,
+          table: new_sym_table,
+          is_declaration: True,
+        ),
       ]
 
-      process_rest2(type_token, rest, new_sym_table, xmls)
+      process_var_dec_rest(
+        type_token:,
+        tokens: rest,
+        table: new_sym_table,
+        xmls:,
+      )
     }
     _ -> #(sym_table, [], tokens)
   }
 }
 
-fn process_rest2(
-  type_token: tokenizer.Token,
-  tokens: List(tokenizer.Token),
-  table: symbol_table.SymbolTable,
-  acc: List(String),
+fn process_var_dec_rest(
+  type_token type_token: tokenizer.Token,
+  tokens tokens: List(tokenizer.Token),
+  table table: symbol_table.SymbolTable,
+  xmls xmls: List(String),
 ) -> #(symbol_table.SymbolTable, List(String), List(tokenizer.Token)) {
   case tokens {
-    [#(tokenizer.Symbol, ","), next_id, ..more] -> {
+    [#(tokenizer.Symbol, ","), next_id, ..rest_tokens] -> {
       let new_table =
         symbol_table.define(table, next_id.1, type_token.1, symbol_table.Var)
-      let acc2 =
-        list.append(acc, [
-          tokenizer.add_xml_with_symbol(#(tokenizer.Symbol, ","), table, False),
-          tokenizer.add_xml_with_symbol(next_id, new_table, True),
+      let new_xmls =
+        list.append(xmls, [
+          tokenizer.add_xml_with_symbol(
+            token: #(tokenizer.Symbol, ","),
+            table: table,
+            is_declaration: False,
+          ),
+          tokenizer.add_xml_with_symbol(
+            token: next_id,
+            table: new_table,
+            is_declaration: True,
+          ),
         ])
-      process_rest2(type_token, more, new_table, acc2)
+      process_var_dec_rest(
+        type_token: type_token,
+        tokens: rest_tokens,
+        table: new_table,
+        xmls: new_xmls,
+      )
     }
-    [#(tokenizer.Symbol, ";"), ..more] -> {
+    [#(tokenizer.Symbol, ";"), ..rest_tokens] -> {
       let acc2 =
-        list.append(acc, [
-          tokenizer.add_xml_with_symbol(#(tokenizer.Symbol, ";"), table, False),
+        list.append(xmls, [
+          tokenizer.add_xml_with_symbol(
+            token: #(tokenizer.Symbol, ";"),
+            table: table,
+            is_declaration: False,
+          ),
         ])
-      #(table, acc2, more)
+      #(table, acc2, rest_tokens)
     }
-    _ -> #(table, acc, tokens)
+    _ -> #(table, xmls, tokens)
   }
 }
 
@@ -228,21 +295,33 @@ fn process_subroutine_dec(
       let sub_sym_table = symbol_table.start_subroutine(sym_table)
       // open_paren の出力
       let xml_acc = [
-        tokenizer.add_xml_with_symbol(open_paren, sub_sym_table, False),
+        tokenizer.add_xml_with_symbol(
+          token: open_paren,
+          table: sub_sym_table,
+          is_declaration: False,
+        ),
       ]
 
       let #(sub_table, params_xml, after_params) =
-        process_params(rest, sub_sym_table, xml_acc)
+        process_arguments(tokens: rest, table: sub_sym_table, xml: xml_acc)
       let xmls =
         list.append(
           [
             tokenizer.add_xml_with_symbol(
-              #(tokenizer.Keyword, sub_kw),
-              sym_table,
-              False,
+              token: #(tokenizer.Keyword, sub_kw),
+              table: sym_table,
+              is_declaration: False,
             ),
-            tokenizer.add_xml_with_symbol(return_type, sym_table, False),
-            tokenizer.add_xml_with_symbol(subroutine_name, sub_table, True),
+            tokenizer.add_xml_with_symbol(
+              token: return_type,
+              table: sym_table,
+              is_declaration: False,
+            ),
+            tokenizer.add_xml_with_symbol(
+              token: subroutine_name,
+              table: sub_table,
+              is_declaration: True,
+            ),
           ],
           params_xml,
         )
@@ -252,31 +331,39 @@ fn process_subroutine_dec(
   }
 }
 
-// パラメータリストを処理する local 関数
-fn process_params(
-  tokens: List(tokenizer.Token),
-  table: symbol_table.SymbolTable,
-  acc: List(String),
+// 引数リストを処理する local 関数
+fn process_arguments(
+  tokens tokens: List(tokenizer.Token),
+  table table: symbol_table.SymbolTable,
+  xml xml: List(String),
 ) -> #(symbol_table.SymbolTable, List(String), List(tokenizer.Token)) {
   case tokens {
     // パラメータがない場合、最初に閉じ括弧が来る
-    [#(tokenizer.Symbol, ")"), ..more] -> {
-      let acc2 =
-        list.append(acc, [
-          tokenizer.add_xml_with_symbol(#(tokenizer.Symbol, ")"), table, False),
+    [#(tokenizer.Symbol, ")"), ..rest_tokens] -> {
+      let new_xml =
+        list.append(xml, [
+          tokenizer.add_xml_with_symbol(
+            token: #(tokenizer.Symbol, ")"),
+            table: table,
+            is_declaration: False,
+          ),
         ])
-      #(table, acc2, more)
+      #(table, new_xml, rest_tokens)
     }
     // カンマが来た場合：consume comma, then process parameter
-    [#(tokenizer.Symbol, ","), ..more] -> {
-      let acc2 =
-        list.append(acc, [
-          tokenizer.add_xml_with_symbol(#(tokenizer.Symbol, ","), table, False),
+    [#(tokenizer.Symbol, ","), ..rest_tokens] -> {
+      let new_xml =
+        list.append(xml, [
+          tokenizer.add_xml_with_symbol(
+            token: #(tokenizer.Symbol, ","),
+            table: table,
+            is_declaration: False,
+          ),
         ])
-      process_params(more, table, acc2)
+      process_arguments(tokens: rest_tokens, table: table, xml: new_xml)
     }
     // パラメータ: type_token, identifier_token, then続く
-    [type_token, identifier_token, ..more] -> {
+    [type_token, identifier_token, ..rest_tokens] -> {
       let new_table =
         symbol_table.define(
           table,
@@ -284,13 +371,21 @@ fn process_params(
           type_token.1,
           symbol_table.Argument,
         )
-      let acc2 =
-        list.append(acc, [
-          tokenizer.add_xml_with_symbol(type_token, table, False),
-          tokenizer.add_xml_with_symbol(identifier_token, new_table, True),
+      let new_xml =
+        list.append(xml, [
+          tokenizer.add_xml_with_symbol(
+            token: type_token,
+            table: table,
+            is_declaration: False,
+          ),
+          tokenizer.add_xml_with_symbol(
+            token: identifier_token,
+            table: new_table,
+            is_declaration: True,
+          ),
         ])
-      process_params(more, new_table, acc2)
+      process_arguments(tokens: rest_tokens, table: new_table, xml: new_xml)
     }
-    _ -> #(table, acc, tokens)
+    _ -> #(table, xml, tokens)
   }
 }

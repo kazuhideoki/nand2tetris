@@ -204,9 +204,9 @@ import symbol_table.{kind_to_string, lookup}
 /// 各トークンを適切な XML タグで包む（シンボル情報付き版）
 /// 引数 table: SymbolTable、is_declaration: Bool は宣言時なら true、そうでなければ false
 pub fn add_xml_with_symbol(
-  token: Token,
-  table: symbol_table.SymbolTable,
-  is_declaration: Bool,
+  token token: Token,
+  table table: symbol_table.SymbolTable,
+  is_declaration is_declaration: Bool,
 ) -> String {
   let tag = case token.0 {
     Keyword -> "keyword"
